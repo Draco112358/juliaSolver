@@ -1,0 +1,21 @@
+name = "JuliaSolver"
+uuid = "dc39d886-dbc4-4b2e-8501-24960dc229b6"
+authors = ["Draco112358 <gianni.frittella@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+AWS = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
+AWSS3 = "1c724243-ef5b-51ab-93f4-b0a88ac62a95"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
+Genie = "c43c736e-a2d1-11e8-161f-af95117fbd1e"
+Inflector = "6d011eab-0732-4556-8808-e463c76bf3b6"
+IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+LinearMaps = "7a12625a-238d-50fd-b39a-03d52299707e"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+MKL = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
+MLUtils = "f1d291b0-491e-4a28-83b9-f70985020b54"
+ProfileView = "c46f51b8-102a-5cf2-8d2c-8597cb0e0da7"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
