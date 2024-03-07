@@ -1,7 +1,7 @@
 include("prod_real_complex.jl")
 using MKL
 
-function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, time1Vector, time2Vector)
+function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector)
     m = size(incidence_selection["A"], 1)
     ns = size(incidence_selection["Gamma"], 2)
     I = @view x[1:m]
@@ -25,7 +25,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         CircKT = reshape(I_exp, Nx, Ny, Nz)
         padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
         padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-        Chi = customIfftOptimized(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1])
+        Chi = customIfftOptimized(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1], chiVector[cont])
         Y1[ind_aux_Lp[cont]] = Y1[ind_aux_Lp[cont]] + prod_real_transposed_complex(expansions["mat_map_Lp"][cont, 1], reshape(Chi[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz, 1))
     end
     Y1 = 1im * w * Y1 + DZ .* I + prod_real_complex(incidence_selection["A"] , Phi)
@@ -41,15 +41,13 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
             CircKT = reshape(Q_exp, Nx, Ny, Nz)
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-            time1 = @elapsed Chi = customIfftOptimized(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2])
-            push!(time1Vector, time1)
+            Chi = customIfftOptimized(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
             Y2 = Y2 + prod_real_transposed_complex(expansions["exp_P"][cont2, cont1], (reshape(Chi[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz, 1)))
             if cont1 != cont2
                 Q_exp = prod_real_complex(expansions["exp_P"][cont2, cont1], Q)
                 CircKT = reshape(Q_exp, Nx, Ny, Nz)
                 padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-                time2 = @elapsed Chi = customIfftOptimized(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2])
-                push!(time2Vector, time2)
+                Chi = customIfftOptimized(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
                 Y2 = Y2 + prod_real_transposed_complex(expansions["exp_P"][cont1, cont2], (reshape(Chi[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz, 1)))
             end
         end
@@ -99,6 +97,7 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3)
 end
 
 
-function customIfftOptimized(PLIVector, PVector, padded_CircKt, FFTCLp)
-    return PLIVector * (FFTCLp .* (PVector*padded_CircKt))
+function customIfftOptimized(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
+    b = FFTCLp .* (PVector*padded_CircKt)
+    mul!(chiVector, PLIVector, b)
 end
