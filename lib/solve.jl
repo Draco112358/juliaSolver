@@ -5,9 +5,8 @@ include("compute_FFT_mutual_coupling_mats.jl")
 include("mesher_FFT.jl")
 include("From_3D_to_1D.jl")
 
-using JSON
+using JSON, Profile, PProf
 using MLUtils: unsqueeze
-
 function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports)
     z = [[[[0.1, 0.0]]]]
     pop!(z)
@@ -268,7 +267,9 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams)
     FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW)
 
     println("time for solver")
+    #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
     out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
+    #PProf.pprof()
     return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
-
+    #return ""
 end

@@ -7,6 +7,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
     I = @view x[1:m]
     Q = @view x[m+1:m+ns]
     Phi = @view x[m+ns+1:end]
+    resProd = zeros(ComplexF64, size(expansions["exp_P"][3, 2], 1), 1)
     # Lp * I ---------------------------------------------------------------
     mx = incidence_selection["mx"]
     my = incidence_selection["my"]
@@ -18,7 +19,10 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         Ny = size(FFTCLp[cont, 1], 2) ÷ 2
         Nz = size(FFTCLp[cont, 1], 3) ÷ 2
         Ired = I[ind_aux_Lp[cont]]
-        I_exp = prod_real_complex(expansions["mat_map_Lp"][cont, 1], Ired)
+        I_exp = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1],1),1]
+        mul!(I_exp, expansions["mat_map_Lp"][cont, 1], Ired)
+        
+        #I_exp = prod_real_complex(expansions["mat_map_Lp"][cont, 1], Ired)
         # I_exp = similar(Ired)
         # mul!(I_exp, expansions["mat_map_Lp"][cont, 1], Ired)
         #I_exp = bmul(expansions["mat_map_Lp"][cont, 1] , Ired)
@@ -28,7 +32,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         Chi = customIfftOptimized(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1], chiVector[cont])
         Y1[ind_aux_Lp[cont]] = Y1[ind_aux_Lp[cont]] + prod_real_transposed_complex(expansions["mat_map_Lp"][cont, 1], reshape(Chi[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz, 1))
     end
-    Y1 = 1im * w * Y1 + DZ .* I + prod_real_complex(incidence_selection["A"] , Phi)
+    Y1 =   lmul!(1im * w,Y1) + DZ .* I + prod_real_complex(incidence_selection["A"] , Phi)
     
     # ---------------- P * Q ---------------------------------------------
     Y2 = zeros(ComplexF64,ns)
@@ -53,7 +57,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         end
     end
     Y2 = Y2 - prod_real_transposed_complex(incidence_selection["Gamma"] , Phi)
-    Y3 = -1.0*(prod_real_transposed_complex(incidence_selection["A"] , I)) + prod_real_complex(Yle , Phi) + 1im * w * (prod_real_complex(incidence_selection["Gamma"], Q))
+    Y3 = lmul!(-1.0, prod_real_transposed_complex(incidence_selection["A"] , I)) + prod_real_complex(Yle , Phi) +  lmul!(1im * w, prod_real_complex(incidence_selection["Gamma"], Q))
     MatrixVector = precond_3_3_vector(lu, invZ, invP, incidence_selection["A"], incidence_selection["Gamma"], w, Y1, Y2, Y3)
     
     return MatrixVector    
@@ -84,13 +88,13 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3)
     
 
     Yi1 = @view Y[i1]   
-    Y[i1] .= Yi1 .+ M1-1.0*(prod_real_complex(invZ,prod_real_complex(A, M2))) .+ 1im*w*(prod_real_complex(invZ,prod_real_complex(A, M4))) .- 1.0*(prod_real_complex(invZ,prod_real_complex(A, M5)))
+    Y[i1] .= Yi1 .+ M1-1.0*(prod_real_complex(invZ,prod_real_complex(A, M2))) .+ lmul!(1im*w, prod_real_complex(invZ,prod_real_complex(A, M4))) .- lmul!(1.0,prod_real_complex(invZ,prod_real_complex(A, M5)))
 
     Yi2 = @view Y[i2]
-    Y[i2] .= Yi2 .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M2))) .+ M3 - 1im*w*(prod_real_complex(invP,prod_real_transposed_complex(Gamma, M4))) .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M5)))
+    Y[i2] .= Yi2 .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M2))) .+ M3 - lmul!(1im*w,prod_real_complex(invP,prod_real_transposed_complex(Gamma, M4))) .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M5)))
     
     Yi3 = @view Y[i3]
-    Y[i3] .= Yi3 .+ M2 .- 1im*w*M4 .+ M5
+    Y[i3] .= Yi3 .+ M2 .- lmul!(1im*w,M4) .+ M5
 
     # return  convert(Array{ComplexF64}, Y)
     return Y
@@ -98,6 +102,7 @@ end
 
 
 function customIfftOptimized(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
-    b = FFTCLp .* (PVector*padded_CircKt)
+    mul!(chiVector, PVector, padded_CircKt)
+    b = FFTCLp .* chiVector
     mul!(chiVector, PLIVector, b)
 end

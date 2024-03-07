@@ -162,7 +162,7 @@ function precond_3_3_Kt(F, invZ, invP, A, Gamma, n1, n2, X3)
     M5 = F\X3
     
     Yi1 = @view Y[i1]
-    Y[i1] .= Yi1 .- 1.0*(prod_real_complex(invZ, prod_real_complex(A, M5)))
+    Y[i1] .= Yi1 .- lmul!(1.0, prod_real_complex(invZ, prod_real_complex(A, M5)))
     Yi2 = @view Y[i2]
     Y[i2] .= Yi2 .+ (prod_real_complex(invP, prod_real_transposed_complex(Gamma, M5)))
     Yi3 = @view Y[i3]
