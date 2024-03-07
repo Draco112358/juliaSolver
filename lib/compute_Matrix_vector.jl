@@ -59,6 +59,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
             PlansFFT[cont1, cont2] = plan_fft(padded_CircKt)
             PlansIFFT[cont1, cont2] = plan_ifft!(FFTCP[cont1, cont2])
             mul!(res[cont1, cont2], PlansFFT[cont1, cont2], padded_CircKt)
+            res[cont1, cont2] = FFTCP[cont1, cont2] .* res[cont1, cont2]
             mul!(res[cont1, cont2], PlansIFFT[cont1, cont2], res[cont1, cont2])
             # Chi = PlansIFFT[cont1, cont2]*(FFTCP[cont1, cont2].*(PlansFFT[cont1, cont2]*padded_CircKt))
             # Chi = customIfft(padded_CircKt, FFTCP[cont1, cont2], PlansFFT[cont1, cont2])
@@ -72,6 +73,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
                 CircKT = reshape(Q_exp, Nx, Ny, Nz)
                 padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
                 mul!(res[cont1, cont2], PlansFFT[cont1, cont2], padded_CircKt)
+                res[cont1, cont2] = FFTCP[cont1, cont2] .* res[cont1, cont2]
                 mul!(res[cont1, cont2], PlansIFFT[cont1, cont2], res[cont1, cont2])
                 # Chi = PlansIFFT[cont1, cont2]*(FFTCP[cont1, cont2].*(PlansFFT[cont1, cont2]*padded_CircKt))
                 # Chi = customIfft(padded_CircKt, FFTCP[cont1, cont2], PlansFFT[cont1, cont2])
