@@ -13,7 +13,7 @@ function create_volume_centers(grids, map, num_centri, sx, sy, sz, min_v)
             for cont3=1:Nz
                 for k=1:num_grids
                     if grids[k][cont][cont2][cont3] != 0
-                        pos = convert(Int64,map[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])
+                        pos = convert(Int64,map[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])
                         cx = min_v[1] + sx * (cont - 1) + sx / 2
                         cy = min_v[2] + sy * (cont2 - 1) + sy / 2
                         cz = min_v[3] + sz * (cont3 - 1) + sz / 2

@@ -13,7 +13,7 @@ function build_center_air_Voxels(grids, sx, sy, sz, min_v)
                 cx = min_v[1] + sx*(cont-1) + sx/2
                 cy = min_v[2] + sy*(cont2-1) + sy/2
                 cz = min_v[3] + sz*(cont3-1) + sz/2
-                centri_vox[From_3D_to_1D(cont, cont2, cont3, Nx, Ny), :] = [cx cy cz]
+                centri_vox[from_3D_to_1D(cont, cont2, cont3, Nx, Ny), :] = [cx cy cz]
             end
         end
     end

@@ -1,3 +1,4 @@
+using MKL
 using SparseArrays
 
 function prod_real_complex(A::SparseMatrixCSC,x)

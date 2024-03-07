@@ -171,9 +171,9 @@ end
 
 
 function getEscalFrom(unit)
-    escal = 1
+    escal = 1.0
     if (unit == "m")
-        escal = 1
+        escal = 1.0
     end
     if (unit == "dm")
         escal = 1e-1

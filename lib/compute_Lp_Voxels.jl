@@ -1,5 +1,3 @@
-include("round_ud.jl")
-
 function compute_Lp_Voxels(centri_m, centri_n, sx, sy, sz, sx2, sy2, sz2, dc, is_sym)
     #M = size(centri_m, 1)
     M = convert(Int64,size(centri_m, 1)/3)
@@ -788,4 +786,14 @@ function integ_vol_vol(x1v, y1v, z1v, x2v, y2v, z2v)
         end
     end
     return sol
+end
+
+function round_ud(args...)
+    nargin = length(args)
+    if nargin<2
+        out=round.(args[1]);
+    else
+        out=round.(args[1]*10^args[2])/10^args[2];
+    end
+    return out
 end

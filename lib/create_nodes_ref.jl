@@ -120,112 +120,112 @@ function create_nodes_ref(grids, num_full_vox, external_grids, mapping_vols, dom
                         end
                         if any([is_f1 is_f2 is_f3 is_f4 is_f5 is_f6])
                             if is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 - 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 - 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && !is_f1 && !is_f3 && !is_f4 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 + 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 + 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f3 && !is_f1 && !is_f2 && !is_f4 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f4 && !is_f1 && !is_f2 && !is_f3 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f5 && !is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f6 && !is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f3 && !is_f2 && !is_f4 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 - 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 - 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f4 && !is_f2 && !is_f3 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 - 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 - 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f5 && !is_f2 && !is_f3 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f6 && !is_f2 && !is_f3 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f3 && is_f5 && !is_f2 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f3 && is_f6 && !is_f2 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f4 && is_f5 && !is_f2 && !is_f3 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 - 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f1 && is_f4 && is_f6 && !is_f2 && !is_f3 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 - 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f3 && !is_f1 && !is_f4 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 + 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 + 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f4 && !is_f1 && !is_f3 && !is_f5 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 + 1, c3, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 + 1, c3, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f5 && !is_f1 && !is_f3 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f6 && !is_f1 && !is_f3 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f3 && is_f5 && !is_f1 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f3 && is_f6 && !is_f1 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f4 && is_f5 && !is_f1 && !is_f3 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 + 1, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f2 && is_f4 && is_f6 && !is_f1 && !is_f3 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2 + 1, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f3 && is_f5 && !is_f1 && !is_f2 && !is_f4 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f3 && is_f6 && !is_f1 && !is_f2 && !is_f4 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 - 1, c2, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 - 1, c2, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f4 && is_f5 && !is_f1 && !is_f2 && !is_f3 && !is_f6
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2, c3 - 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2, c3 - 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             elseif is_f4 && is_f6 && !is_f1 && !is_f2 && !is_f3 && !is_f5
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1 + 1, c2, c3 + 1, 3 * Nx, 3 * Ny)
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1 + 1, c2, c3 + 1, 3 * Nx, 3 * Ny)
                                 cont_d += 1
-                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                                lista_nod[cont_d] = nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
                             end
                         else
-                            nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3, 3 * Nx, 3 * Ny)
+                            nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3, 3 * Nx, 3 * Ny)
                         end
                     end
                 end
@@ -348,66 +348,66 @@ function create_nodes_ref(grids, num_full_vox, external_grids, mapping_vols, dom
                             nodes_to_see = build_nodes(c1, c2, c3, 3*Nx, 3*Ny)
                             nodo_shared, val_nodo = bin_search_mod(nodes_to_see, nodes_red_dom)
                             if abs(nodo_shared) > 1e-8
-                                nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = val_nodo
+                                nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = val_nodo
                                 cont_reu += 1
                                 nodes_reused[cont_reu] = val_nodo
                             else
                                 if is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2-1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2-1, c3, 3*Nx, 3*Ny)
                                 elseif is_f2 && !is_f1 && !is_f3 && !is_f4 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2+1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2+1, c3, 3*Nx, 3*Ny)
                                 elseif is_f3 && !is_f1 && !is_f2 && !is_f4 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2, c3, 3*Nx, 3*Ny)
                                 elseif is_f4 && !is_f1 && !is_f2 && !is_f3 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2, c3, 3*Nx, 3*Ny)
                                 elseif is_f5 && !is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f6 && !is_f1 && !is_f2 && !is_f3 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f3 && !is_f2 && !is_f4 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2-1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2-1, c3, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f4 && !is_f2 && !is_f3 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2-1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2-1, c3, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f5 && !is_f2 && !is_f3 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2-1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2-1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f6 && !is_f2 && !is_f3 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2-1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2-1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f3 && is_f5 && !is_f2 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2-1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2-1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f3 && is_f6 && !is_f2 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2-1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2-1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f4 && is_f5 && !is_f2 && !is_f3 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2-1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2-1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f1 && is_f4 && is_f6 && !is_f2 && !is_f3 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2-1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2-1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f3 && !is_f1 && !is_f4 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2+1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2+1, c3, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f4 && !is_f1 && !is_f3 && !is_f5 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2+1, c3, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2+1, c3, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f5 && !is_f1 && !is_f3 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2+1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2+1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f6 && !is_f1 && !is_f3 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2+1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2+1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f3 && is_f5 && !is_f1 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2+1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2+1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f3 && is_f6 && !is_f1 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2+1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2+1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f4 && is_f5 && !is_f1 && !is_f3 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2+1, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2+1, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f2 && is_f4 && is_f6 && !is_f1 && !is_f3 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2+1, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2+1, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f3 && is_f5 && !is_f1 && !is_f2 && !is_f4 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f3 && is_f6 && !is_f1 && !is_f2 && !is_f4 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1-1, c2, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1-1, c2, c3+1, 3*Nx, 3*Ny)
                                 elseif is_f4 && is_f5 && !is_f1 && !is_f2 && !is_f3 && !is_f6
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2, c3-1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2, c3-1, 3*Nx, 3*Ny)
                                 elseif is_f4 && is_f6 && !is_f1 && !is_f2 && !is_f3 && !is_f5
-                                    nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1+1, c2, c3+1, 3*Nx, 3*Ny)
+                                    nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1+1, c2, c3+1, 3*Nx, 3*Ny)
                                 end
                             end
                         else
-                            nodes[convert(Int64,mapping_vols[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = From_3D_to_1D(c1, c2, c3, 3*Nx, 3*Ny)
+                            nodes[convert(Int64,mapping_vols[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])] = from_3D_to_1D(c1, c2, c3, 3*Nx, 3*Ny)
                         end
                     end
                 end
@@ -437,57 +437,57 @@ end
 function build_nodes(c1, c2, c3, Nx, Ny)
     nodes = zeros(26)
     k = 1
-    nodes[k] = From_3D_to_1D(c1-1, c2-1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2-1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2-1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2-1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2-1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2-1, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2-1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2-1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2-1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2-1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2-1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2-1, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2-1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2-1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2-1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2-1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2-1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2-1, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2+1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2+1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2+1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2+1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1-1, c2+1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1-1, c2+1, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2+1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2+1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2+1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2+1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1, c2+1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1, c2+1, c3+1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2+1, c3-1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2+1, c3-1, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2+1, c3, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2+1, c3, Nx, Ny)
     k += 1
-    nodes[k] = From_3D_to_1D(c1+1, c2+1, c3+1, Nx, Ny)
+    nodes[k] = from_3D_to_1D(c1+1, c2+1, c3+1, Nx, Ny)
 
     return nodes
 end            

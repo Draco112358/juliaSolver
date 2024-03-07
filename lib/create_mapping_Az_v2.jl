@@ -15,10 +15,10 @@ function create_mapping_Az_v2(grids, mapping_Vox, nodes, nodes_red)
             for cont3 = 1:Nz-1
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] && grids[k][cont][cont2][cont3+1]
-                        nn1 = bin_search(nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])], nodes_red)
-                        nn2 = bin_search(nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3+1, Nx, Ny)])], nodes_red)
+                        nn1 = bin_search(nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])], nodes_red)
+                        nn2 = bin_search(nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3+1, Nx, Ny)])], nodes_red)
                         if abs(nn1-nn2) > 1e-8
-                            kkey = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                            kkey = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
                             if mapping[kkey] == 0
                                 num_ele += 1
                                 mapping[kkey] = num_ele

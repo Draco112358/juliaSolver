@@ -35,10 +35,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                 end
                 if grids[k][cont][cont2][cont3] && (!externals_grids[k, 2][cont, cont2, cont3] || check_om)
                     num_ele_12 += 1
-                    p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                    mapping_surf_12_se[From_3D_to_1D(cont, cont2, cont3, Nx, Ny + 1)] = num_ele_12
-                    mapping_surf_1234[From_3D_to_1D(cont * 2, cont2 * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
-                    mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
+                    p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                    mapping_surf_12_se[from_3D_to_1D(cont, cont2, cont3, Nx, Ny + 1)] = num_ele_12
+                    mapping_surf_1234[from_3D_to_1D(cont * 2, cont2 * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
+                    mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
                     contat_tot += 1
                     ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                     ind_c[contat_tot] = num_ele_12
@@ -62,10 +62,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && !grids[k][cont][cont2-1][cont3] && (!externals_grids[k, 2][cont, cont2, cont3] || check_om)
                         num_ele_12 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_12_se[From_3D_to_1D(cont, cont2, cont3, Nx, Ny + 1)] = num_ele_12
-                        mapping_surf_1234[From_3D_to_1D(cont * 2, cont2 * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
-                        mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_12_se[from_3D_to_1D(cont, cont2, cont3, Nx, Ny + 1)] = num_ele_12
+                        mapping_surf_1234[from_3D_to_1D(cont * 2, cont2 * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
+                        mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12
@@ -89,10 +89,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && (!externals_grids[k, 1][cont, cont2, cont3] || check_om)
                         num_ele_12 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_12_se[From_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny + 1)] = num_ele_12
-                        mapping_surf_1234[From_3D_to_1D(cont * 2, (cont2 + 1) * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
-                        mapping_surf_1256[From_3D_to_1D(cont, (cont2 + 1) * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_12_se[from_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny + 1)] = num_ele_12
+                        mapping_surf_1234[from_3D_to_1D(cont * 2, (cont2 + 1) * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
+                        mapping_surf_1256[from_3D_to_1D(cont, (cont2 + 1) * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12
@@ -126,10 +126,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                         end
                         if controllo_altri == 0
                             num_ele_12 += 1
-                            p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                            mapping_surf_12_se[From_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny + 1)] = num_ele_12
-                            mapping_surf_1234[From_3D_to_1D(cont * 2, (cont2 + 1) * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
-                            mapping_surf_1256[From_3D_to_1D(cont, (cont2 + 1) * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
+                            p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                            mapping_surf_12_se[from_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny + 1)] = num_ele_12
+                            mapping_surf_1234[from_3D_to_1D(cont * 2, (cont2 + 1) * 2 - 1, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12
+                            mapping_surf_1256[from_3D_to_1D(cont, (cont2 + 1) * 2 - 1, cont3 * 2, Nx, 2 * (Ny + 1) - 1)] = num_ele_12
                             contat_tot += 1
                             ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                             ind_c[contat_tot] = num_ele_12
@@ -155,10 +155,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                 end
                 if grids[k][cont][cont2][cont3] && (!externals_grids[k, 4][cont, cont2, cont3] || check_om)
                     num_ele_34 += 1
-                    p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                    mapping_surf_34_se[From_3D_to_1D(cont, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
-                    mapping_surf_1234[From_3D_to_1D(cont * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
-                    mapping_surf_3456[From_3D_to_1D(cont * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
+                    p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                    mapping_surf_34_se[from_3D_to_1D(cont, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
+                    mapping_surf_1234[from_3D_to_1D(cont * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
+                    mapping_surf_3456[from_3D_to_1D(cont * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
                     contat_tot += 1
                     ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                     ind_c[contat_tot] = num_ele_12 + num_ele_34
@@ -182,10 +182,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && !(grids[k][cont-1][cont2][cont3]) && (!externals_grids[k, 4][cont, cont2, cont3] || check_om)
                         num_ele_34 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_34_se[From_3D_to_1D(cont, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
-                        mapping_surf_1234[From_3D_to_1D(cont * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
-                        mapping_surf_3456[From_3D_to_1D(cont * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_34_se[from_3D_to_1D(cont, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
+                        mapping_surf_1234[from_3D_to_1D(cont * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
+                        mapping_surf_3456[from_3D_to_1D(cont * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12 + num_ele_34
@@ -209,10 +209,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && (!(externals_grids[k, 3][cont, cont2, cont3]) || check_om)
                         num_ele_34 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_34_se[From_3D_to_1D(cont + 1, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
-                        mapping_surf_1234[From_3D_to_1D((cont + 1) * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
-                        mapping_surf_3456[From_3D_to_1D((cont + 1) * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_34_se[from_3D_to_1D(cont + 1, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
+                        mapping_surf_1234[from_3D_to_1D((cont + 1) * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
+                        mapping_surf_3456[from_3D_to_1D((cont + 1) * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12 + num_ele_34
@@ -246,10 +246,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                         end
                         if controllo_altri == 0
                             num_ele_34 += 1
-                            p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                            mapping_surf_34_se[From_3D_to_1D(cont + 1, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
-                            mapping_surf_1234[From_3D_to_1D((cont + 1) * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
-                            mapping_surf_3456[From_3D_to_1D((cont + 1) * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
+                            p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                            mapping_surf_34_se[from_3D_to_1D(cont + 1, cont2, cont3, Nx + 1, Ny)] = num_ele_12 + num_ele_34
+                            mapping_surf_1234[from_3D_to_1D((cont + 1) * 2 - 1, cont2 * 2, cont3, 2 * (Nx + 1) - 1, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34
+                            mapping_surf_3456[from_3D_to_1D((cont + 1) * 2 - 1, cont2, cont3 * 2, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34
                             contat_tot += 1
                             ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                             ind_c[contat_tot] = num_ele_12 + num_ele_34
@@ -275,10 +275,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && (!(externals_grids[k, 6][cont, cont2, cont3]) || check_om)
                         num_ele_56 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_56_se[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2, cont3 * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_3456[From_3D_to_1D(cont * 2, cont2, cont3 * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_56_se[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2, cont3 * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_3456[from_3D_to_1D(cont * 2, cont2, cont3 * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12 + num_ele_34 + num_ele_56
@@ -302,10 +302,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && !(grids[k][cont][cont2][cont3-1]) && (!externals_grids[k, 6][cont, cont2, cont3] || check_om)
                         num_ele_56 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_56_se[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2, cont3 * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_3456[From_3D_to_1D(cont * 2, cont2, cont3 * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_56_se[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2, cont3 * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_3456[from_3D_to_1D(cont * 2, cont2, cont3 * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12 + num_ele_34 + num_ele_56
@@ -329,10 +329,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                     end
                     if grids[k][cont][cont2][cont3] && (!(externals_grids[k, 5][cont, cont2, cont3]) || check_om)
                         num_ele_56 += 1
-                        p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                        mapping_surf_56_se[From_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2, (cont3 + 1) * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
-                        mapping_surf_3456[From_3D_to_1D(cont * 2, cont2, (cont3 + 1) * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                        mapping_surf_56_se[from_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2, (cont3 + 1) * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
+                        mapping_surf_3456[from_3D_to_1D(cont * 2, cont2, (cont3 + 1) * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
                         contat_tot += 1
                         ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                         ind_c[contat_tot] = num_ele_12 + num_ele_34 + num_ele_56
@@ -366,10 +366,10 @@ function create_mapping_Gamma_no_rep(grids, map_volumes, nodes, nodes_red, exter
                         end
                         if controllo_altri == 0
                             num_ele_56 += 1
-                            p31 = From_3D_to_1D(cont, cont2, cont3, Nx, Ny)
-                            mapping_surf_56_se[From_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
-                            mapping_surf_1256[From_3D_to_1D(cont, cont2 * 2, (cont3 + 1) * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
-                            mapping_surf_3456[From_3D_to_1D(cont * 2, cont2, (cont3 + 1) * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                            p31 = from_3D_to_1D(cont, cont2, cont3, Nx, Ny)
+                            mapping_surf_56_se[from_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
+                            mapping_surf_1256[from_3D_to_1D(cont, cont2 * 2, (cont3 + 1) * 2 - 1, Nx, 2 * (Ny + 1) - 1)] = num_ele_12 + num_ele_34 + num_ele_56
+                            mapping_surf_3456[from_3D_to_1D(cont * 2, cont2, (cont3 + 1) * 2 - 1, 2 * (Nx + 1) - 1, Ny)] = num_ele_12 + num_ele_34 + num_ele_56
                             contat_tot += 1
                             ind_r[contat_tot] = bin_search(nodes[convert(Int64, map_volumes[p31])], nodes_red)
                             ind_c[contat_tot] = num_ele_12 + num_ele_34 + num_ele_56

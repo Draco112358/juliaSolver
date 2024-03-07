@@ -19,12 +19,12 @@ function create_A_mats_and_find_borders_with_map_Zs(grids, mapping_Vox, mapAx, N
             for cont = 1:Nx - 1
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] && grids[k][cont + 1][cont2][cont3]
-                        nodo_v1 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
-                        nodo_v2 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont + 1, cont2, cont3, Nx, Ny)])]
+                        nodo_v1 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                        nodo_v2 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont + 1, cont2, cont3, Nx, Ny)])]
                         if abs(nodo_v1 - nodo_v2) > 1e-8
                             nn1 = bin_search(nodo_v1, nodes_red)
                             nn2 = bin_search(nodo_v2, nodes_red)
-                            pos = convert(Int64,mapAx[From_3D_to_1D(cont, cont2, cont3, Nx - 1, Ny)])
+                            pos = convert(Int64,mapAx[from_3D_to_1D(cont, cont2, cont3, Nx - 1, Ny)])
                             num_ele += 1
                             rAx[num_ele] = pos
                             cAx[num_ele] = nn1
@@ -159,12 +159,12 @@ function create_A_mats_and_find_borders_with_map_Zs(grids, mapping_Vox, mapAx, N
             for cont2 = 1:Ny - 1
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] && grids[k][cont][cont2 + 1][cont3]
-                        nodo_v1 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
-                        nodo_v2 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny)])]
+                        nodo_v1 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                        nodo_v2 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2 + 1, cont3, Nx, Ny)])]
                         if abs(nodo_v1 - nodo_v2) > 1e-8
                             nn1 = bin_search(nodo_v1, nodes_red)
                             nn2 = bin_search(nodo_v2, nodes_red)
-                            pos = convert(Int64,mapAy[From_3D_to_1D(cont, cont2, cont3, Nx, Ny - 1)])
+                            pos = convert(Int64,mapAy[from_3D_to_1D(cont, cont2, cont3, Nx, Ny - 1)])
                             num_ele += 1
                             rAy[num_ele] = pos
                             cAy[num_ele] = nn1
@@ -298,12 +298,12 @@ function create_A_mats_and_find_borders_with_map_Zs(grids, mapping_Vox, mapAx, N
             for cont3 = 1:Nz - 1
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] && grids[k][cont][cont2][cont3 + 1]
-                        nodo_v1 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
-                        nodo_v2 = nodes[convert(Int64,mapping_Vox[From_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)])]
+                        nodo_v1 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])]
+                        nodo_v2 = nodes[convert(Int64,mapping_Vox[from_3D_to_1D(cont, cont2, cont3 + 1, Nx, Ny)])]
                         if abs(nodo_v1 - nodo_v2) > 1e-8
                             nn1 = bin_search(nodo_v1, nodes_red)
                             nn2 = bin_search(nodo_v2, nodes_red)
-                            pos = convert(Int64,mapAz[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)])
+                            pos = convert(Int64,mapAz[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)])
                             num_ele += 1
                             rAz[num_ele] = pos
                             cAz[num_ele] = nn1

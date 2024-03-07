@@ -15,7 +15,7 @@ function create_volumes_mapping_v2(grids)
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] != 0
                         num_ele += 1
-                        mapping[From_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele
+                        mapping[from_3D_to_1D(cont, cont2, cont3, Nx, Ny)] = num_ele
                         break
                     end
                 end

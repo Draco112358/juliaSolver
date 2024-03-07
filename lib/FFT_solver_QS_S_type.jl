@@ -1,5 +1,9 @@
-using SparseArrays, IterativeSolvers, FFTW, LinearAlgebra, LinearMaps
 using MKL
+using SparseArrays, IterativeSolvers, FFTW, LinearAlgebra, LinearMaps
+include("prod_real_complex.jl")
+include("build_Yle_S.jl")
+include("compute_Z_self.jl")
+include("gmres_custom.jl")
 
 function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
     FFTW.set_num_threads(12)
@@ -25,21 +29,21 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     Vrest = zeros(ComplexF64, m + n + ns, size(ports["port_nodes"], 1))
     invP = sparse(1:ns, 1:ns, 1 ./ diagonals["P"],ns,ns)
     R_chiusura = 50.0
-    PVector = []
-    PLIVector = []
-    time1Vector = []
-    time2Vector = []
+    PVector = Array{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}}(undef, 3)
+    PLIVector = Array{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}(undef,3)
+    time1Vector::Array{Float64} = []
+    time2Vector::Array{Float64} = []
     for cont = 1:3
             Nx = size(FFTCLp[cont, 1], 1) ÷ 2
             Ny = size(FFTCLp[cont, 1], 2) ÷ 2
             Nz = size(FFTCLp[cont, 1], 3) ÷ 2
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             P = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
-            push!(PVector, P)
-            push!(PLIVector, plan_ifft(FFTCLp[cont, 1] .* (P*padded_CircKt), flags=FFTW.MEASURE))
+            PVector[cont] = P
+            PLIVector[cont] = plan_ifft(FFTCLp[cont, 1] .* (P*padded_CircKt), flags=FFTW.MEASURE)
     end
-    P2Vector::Matrix{Any} = zeros(3, 3)
-    PLI2Vector::Matrix{Any} = zeros(3, 3)
+    P2Vector = Matrix{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}}(undef,3,3)
+    PLI2Vector = Matrix{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}(undef,3, 3)
     for cont1 = 1:3
         for cont2 = cont1:3
             Nx = size(FFTCP[cont1, cont2], 1) ÷ 2
@@ -171,86 +175,17 @@ function precond_3_3_Kt(F, invZ, invP, A, Gamma, n1, n2, X3)
 
     M5 = F\X3
     
-    Y[i1] .= Y[i1] .- 1.0*(prod_real_complex(invZ, prod_real_complex(A, M5)))
-    Y[i2] .= Y[i2] .+ (prod_real_complex(invP, prod_real_transposed_complex(Gamma, M5)))
-    Y[i3] .= Y[i3] .+ M5
-
-
-    return Y
-    
-end
-
-function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3)
-    
-    n1=length(X1)
-    n2=length(X2)
-    n3=length(X3)
-
-    i1=range(1, stop=n1)
-    i2=range(n1+1,stop=n1+n2)
-    i3=range(n1+n2+1,stop=n1+n2+n3)
-
-    Y=zeros(ComplexF64 , n1+n2+n3)
-    
-    
-    M1 = prod_real_complex(invZ, X1)
-   
-    M2 = F\(prod_real_transposed_complex(A, M1))  
-    
-    M3 = prod_real_complex(invP, X2)  
-    
-    M4 = F\(prod_real_complex(Gamma, M3)) 
-    
-    M5 = F\X3
-    
-
-    Yi1 = @view Y[i1]   
-    Y[i1] .= Yi1 .+ M1-1.0*(prod_real_complex(invZ,prod_real_complex(A, M2))) .+ 1im*w*(prod_real_complex(invZ,prod_real_complex(A, M4))) .- 1.0*(prod_real_complex(invZ,prod_real_complex(A, M5)))
-    # Yi1 = @view Y[i1]
-    # Y[i1] .= Yi1 .+ 1im*w*(prod_real_complex((invZ),prod_real_complex((A), M4)))
-    # Yi1 = @view Y[i1]
-    # Y[i1] .= Yi1 .- 1.0*(prod_real_complex((invZ),prod_real_complex((A), M5)))
-    
+    Yi1 = @view Y[i1]
+    Y[i1] .= Yi1 .- 1.0*(prod_real_complex(invZ, prod_real_complex(A, M5)))
     Yi2 = @view Y[i2]
-    Y[i2] .= Yi2 .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M2))) .+ M3 - 1im*w*(prod_real_complex(invP,prod_real_transposed_complex(Gamma, M4))) .+ (prod_real_complex(invP,prod_real_transposed_complex(Gamma, M5)))
-    # Yi2 = @view Y[i2]
-    # Y[i2] .= Yi2 .+ M3 - 1im*w*(prod_real_complex(invP,prod_real_complex(transpose(Gamma), M4)))
-    # Yi2 = @view Y[i2]
-    # Y[i2] .= Yi2 .+ (prod_real_complex(invP,prod_real_complex(transpose(Gamma), M5)))
-    
+    Y[i2] .= Yi2 .+ (prod_real_complex(invP, prod_real_transposed_complex(Gamma, M5)))
     Yi3 = @view Y[i3]
-    Y[i3] .= Yi3 .+ M2 .- 1im*w*M4 .+ M5
-    # Yi3 = @view Y[i3]
-    # Y[i3] .= Yi3 .- 1im*w*M4
-    # Yi3 = @view Y[i3]
-    # Y[i3] .= Yi3 .+ M5
+    Y[i3] .= Yi3 .+ M5
+
+
+    return Y
     
-    # return  convert(Array{ComplexF64}, Y)
-    return Y
 end
-
-# function prod_real_complex(A,x)
-#     # A is a N x N real matrix and x is a complex matrix
-#     N=size(A,1);
-#     y=zeros(ComplexF64 , N, 1)
-#     y=*(A,real.(x))+1im * *(A,imag.(x))
-#     return y
-# end
-
-# function prod_complex_real(A,x)
-#     # A is a N x N complex matrix and x is a real matrix
-#     N=size(A,1);
-#     y=zeros(ComplexF64 , N, 1)
-#     y=*(real.(A),x)+1im * *(imag.(A),x)
-#     return y
-# end
-
-function threaded_prod(Y,matrix,vector)
-    bmul!(vector,matrix,Y, true, false)
-    return Y
-end
-
-
 
 
 function s2z(S,Zo)
@@ -273,23 +208,4 @@ function s2y(S,Zo)
         Y[:,:,cont]=Zo*((Id+S[:,:,cont])\(Id-1.0*S[:,:,cont]))
     end
     return Y
-end
-
-function customIfftOptimized(PLIVector, PVector, padded_CircKt, FFTCLp, cont)
-    return PLIVector[cont] * (FFTCLp[cont, 1] .* (PVector[cont]*padded_CircKt))
-end
-
-function customIfftOptimized2(PLI2Vector, P2Vector, padded_CircKt, FFTCP, cont1, cont2)
-    return PLI2Vector[cont1,cont2] * (FFTCP[cont1, cont2] .* (P2Vector[cont1,cont2]*padded_CircKt))
-end
-
-
-function customIfft(padded_CircKt, FFTCLp, cont)
-    Chi = ifft(FFTCLp[cont, 1] .* fft(padded_CircKt))
-    return Chi
-end
-
-function customIfft2(padded_CircKt, FFTCP, cont1, cont2)
-    Chi = ifft(FFTCP[cont1, cont2] .* fft(padded_CircKt))
-    return Chi
 end
