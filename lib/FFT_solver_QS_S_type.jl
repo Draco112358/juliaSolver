@@ -1,5 +1,5 @@
 using MKL
-using SparseArrays, IterativeSolvers, FFTW, LinearAlgebra, LinearMaps
+using SparseArrays, IterativeSolvers, LinearAlgebra, LinearMaps
 include("prod_real_complex.jl")
 include("build_Yle_S.jl")
 include("compute_Z_self.jl")
@@ -7,7 +7,7 @@ include("gmres_custom.jl")
 
 function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
     #FFTW.set_num_threads(Threads.nthreads())
-    FFTW.set_num_threads(12)
+    # FFTW.set_num_threads(12)
     #BLAS.set_num_threads(convert(Int64,Base.Threads.nthreads()/2))
     #BLAS.set_num_threads(6)
     
@@ -27,36 +27,6 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     Vrest::Matrix{ComplexF64} = zeros(ComplexF64, m + n + ns, size(ports["port_nodes"], 1))
     invP::SparseMatrixCSC{Float64, Int64} = sparse(1:ns, 1:ns, 1 ./ diagonals["P"],ns,ns)
     R_chiusura = 50.0
-    PVector::Vector{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}} = []
-    PLIVector::Vector{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}=[]
-    ChiVector::Vector{Array{ComplexF64, 3}}=[]
-    for cont = 1:3
-            Nx::Int64 = size(FFTCLp[cont, 1], 1) ÷ 2
-            Ny::Int64 = size(FFTCLp[cont, 1], 2) ÷ 2
-            Nz::Int64 = size(FFTCLp[cont, 1], 3) ÷ 2
-            padded_CircKt::Array{ComplexF64, 3} = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
-            P::FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}} = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
-            push!(PVector, P)
-            push!(PLIVector, plan_ifft(FFTCLp[cont, 1] .* (P*padded_CircKt), flags=FFTW.MEASURE))
-            push!(ChiVector, similar(padded_CircKt))
-    end
-    
-    P2Vector::Matrix{Any} = zeros(3, 3)
-    PLI2Vector::Matrix{Any} = zeros(3, 3)
-    Chi2Vector::Matrix{Any} = zeros(3, 3)
-    for cont1 = 1:3
-        for cont2 = cont1:3
-            Nx::Int64 = size(FFTCP[cont1, cont2], 1) ÷ 2
-            Ny::Int64 = size(FFTCP[cont1, cont2], 2) ÷ 2
-            Nz::Int64 = size(FFTCP[cont1, cont2], 3) ÷ 2
-            padded_CircKt::Array{ComplexF64, 3} = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
-            #Chi = ifft(FFTCP[cont1, cont2] .* fft(padded_CircKt))
-            P::FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}} = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
-            P2Vector[cont1, cont2] = P
-            PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2] .* (P*padded_CircKt), flags=FFTW.MEASURE)
-            Chi2Vector[cont1, cont2] = similar(padded_CircKt)
-        end
-    end
     
     for k = 1:nfreq
         Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
@@ -90,7 +60,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
                 #sol = solve(prob, KrylovJL_GMRES())
 
                 
-                V::Vector{ComplexF64}, flag, relres, iter, resvec = gmres_custom(tn, false, GMRES_settings["tol"][k], Inner_Iter, Vrest[:, c1], w[k], incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, F, PLIVector, PVector, PLI2Vector, P2Vector, ChiVector, Chi2Vector)
+                V::Vector{ComplexF64}, flag, relres, iter, resvec = gmres_custom(tn, false, GMRES_settings["tol"][k], Inner_Iter, Vrest[:, c1], w[k], incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, F)
                 tot_iter_number = (iter[1] - 1) * Inner_Iter + iter[2] + 1
                 if (flag == 0)
                     println("Flag $flag - Iteration = $k - Convergence reached, number of iterations:$tot_iter_number")
@@ -128,9 +98,9 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
             Vrest[:, c1] = V
             is[n1] = 0
             is[n2] = 0
-            for c2::Int64 = c1:size(ports["port_nodes"], 1)
-                n3::Int64 = convert(Int32, ports["port_nodes"][c2, 1])
-                n4::Int64 = convert(Int32, ports["port_nodes"][c2, 2])
+            for c2 = c1:size(ports["port_nodes"], 1)
+                n3 = convert(Int32, ports["port_nodes"][c2, 1])
+                n4 = convert(Int32, ports["port_nodes"][c2, 2])
                 if c1 == c2
                     S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - R_chiusura) / R_chiusura
                 else
