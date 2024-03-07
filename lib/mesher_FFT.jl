@@ -8,7 +8,7 @@ include("create_expansion_ind_Lp_x_grids_v2.jl")
 include("create_expansion_ind_Lp_y_grids_v2.jl")
 include("create_expansion_ind_Lp_z_grids_v2.jl")
 include("compute_diagonals.jl")
-include("compute_diagonal_P_v2.jl")
+include("compute_row_P_sup.jl")
 include("find_voxels_port_pp.jl")
 include("find_voxels_le_pp.jl")
 include("build_center_P_Voxels.jl")
@@ -123,4 +123,21 @@ function mesher_FFT(use_escalings,materials,sx,sy,sz,grids,centri_vox,externals_
 
     return escalings,incidence_selection,circulant_centers,diagonals,expansions,ports,lumped_elements,li_mats,Zs_info
     #return ports,lumped_elements
+end
+
+function compute_diagonal_P_v2(N1,N2,N3,escalings,sx,sy,sz)
+    self_P=zeros(3,1)
+    centro_vox=[0 0 0]
+    row_P=escalings["P"]*compute_row_P_sup(centro_vox,centro_vox,sx,sy,sz,1,1)
+    self_P[1]=row_P[1]
+    row_P=escalings["P"]*compute_row_P_sup(centro_vox,centro_vox,sx,sy,sz,3,3)
+    self_P[2]=row_P[1]
+    row_P=escalings["P"]*compute_row_P_sup(centro_vox,centro_vox,sx,sy,sz,5,5)
+    self_P[3]=row_P[1]
+    diag_P=vcat(
+        fill(self_P[1], N1),
+        fill(self_P[2], N2),
+        fill(self_P[3], N3)
+    )
+    return diag_P
 end
