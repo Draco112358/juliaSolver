@@ -37,7 +37,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
             padded_CircKt::Array{ComplexF64, 3} = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             P::FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}} = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
             push!(PVector, P)
-            push!(PLIVector, plan_ifft(FFTCLp[cont, 1] .* (P*padded_CircKt), flags=FFTW.MEASURE))
+            push!(PLIVector, plan_ifft(FFTCLp[cont, 1], flags=FFTW.MEASURE))
             push!(ChiVector, similar(padded_CircKt))
     end
     
@@ -53,7 +53,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
             #Chi = ifft(FFTCP[cont1, cont2] .* fft(padded_CircKt))
             P::FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}} = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
             P2Vector[cont1, cont2] = P
-            PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2] .* (P*padded_CircKt), flags=FFTW.MEASURE)
+            PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2], flags=FFTW.MEASURE)
             Chi2Vector[cont1, cont2] = similar(padded_CircKt)
         end
     end
