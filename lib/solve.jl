@@ -201,9 +201,9 @@ function create_volumes_mapping_v2(grids)
     Nz = size(grids[1][1][1],1)
     mapping = zeros(Nx*Ny*Nz)
     num_ele = 0
-    for cont = 1:Nx
+    for cont3 = 1:Nz
         for cont2 = 1:Ny
-            for cont3 = 1:Nz
+            for cont = 1:Nx
                 for k = 1:num_grids
                     if grids[k][cont][cont2][cont3] != 0
                         num_ele += 1
