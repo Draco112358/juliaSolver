@@ -4,12 +4,7 @@ include("build_Yle_S.jl")
 include("compute_Z_self.jl")
 include("gmres_custom.jl")
 
-function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
-    #FFTW.set_num_threads(Threads.nthreads())
-    # FFTW.set_num_threads(12)
-    #BLAS.set_num_threads(convert(Int64,Base.Threads.nthreads()/2))
-    #BLAS.set_num_threads(6)
-    
+function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)  
     freq = freq .* escalings["freq"]
     # GMRES settings ----------------------------
     

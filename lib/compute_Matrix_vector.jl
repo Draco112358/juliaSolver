@@ -140,7 +140,6 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
     Yi3 = @view Y[i3]
     Y[i3] = Yi3 .+ M2 .- lmul!(1im*w,M4) .+ M5
 
-    # return  convert(Array{ComplexF64}, Y)
     return Y
 end
 
@@ -150,10 +149,4 @@ function customIfftOptimized!(PLIVector, PVector, padded_CircKt, FFTCLp, chiVect
     b = FFTCLp .* chiVector
     mul!(chiVector, PLIVector, b)
     return chiVector
-end
-
-function matrix_prod_in_place!(A, BVector, vector_to_store_result)
-    A_view = @view vector_to_store_result[1:size(A,1), 1]
-    mul!(A_view, A, BVector)
-    return A_view
 end

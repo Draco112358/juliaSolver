@@ -1,13 +1,4 @@
-function zeros_via_calloc(::Type{T}, dims::Integer...) where T
-    ptr = Ptr{T}(Libc.calloc(prod(dims), sizeof(T)))
-    return unsafe_wrap(Array{T}, ptr, dims; own=true)
- end
-
-
 function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector)
-    # @profile begin
-        
-    # end
     m = size(b, 1)
     n = m
     if restarted
@@ -79,14 +70,10 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
     resvec = zeros(Float64, inner * outer + 1)
     resvec[1] = normr
     normrmin = normr
-    J = zeros_via_calloc(Complex{Float64}, 2, inner)
-    # J = zeros(Complex{Float64}, 2, inner)
-    U = zeros_via_calloc(Complex{Float64}, n, inner+1)
-    # U = zeros(Complex{Float64}, n, inner+1)
-    R = zeros_via_calloc(Complex{Float64}, inner, inner)
-    # R = zeros(Complex{Float64}, inner, inner)
-    w = zeros_via_calloc(Complex{Float64}, inner + 1)
-    # w = zeros(Complex{Float64}, inner + 1)
+    J = zeros(Complex{Float64}, 2, inner)
+    U = zeros(Complex{Float64}, n, inner+1)
+    R = zeros(Complex{Float64}, inner, inner)
+    w = zeros(Complex{Float64}, inner + 1)
     outitercount=0
     for outiter = 1:outer 
         outitercount = outitercount+1
@@ -113,8 +100,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
             v[initer] += 1
             # v = P1*P2*...Pjm1*(Pj*ej)
             for k = initer - 1:-1:1
-                Utemp = @view U[:, k]
-                v -= Utemp * (2 * dot(Utemp, v))
+                @views v -= U[:, k] * (2 * dot(U[:, k], v))
             end
             # Explicitly normalize v to reduce the effects of round-off.
             
@@ -127,8 +113,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
             #println(norm(v))
             # Form Pj*Pj-1*...P1*Av.
             for k = 1:initer
-                Utemp = @view U[:, k]
-                v -= Utemp * (2 * dot(Utemp, v))
+                @views v -= U[:, k] * (2 * dot(U[:, k], v))
             end
             
             # Determine Pj+1.
@@ -167,7 +152,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
                 v[initer+1] = 0
             end
             
-            R[:, initer] = v[1:inner]
+            @views R[:, initer] = v[1:inner]
             normr = abs(w[initer+1])
             resvec[(outiter-1)*inner+initer+1] = normr
             normr_act = normr
@@ -175,13 +160,12 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
             #println(normr)
             if (normr <= tolb || stag >= maxstagsteps || moresteps == 1)
                 if evalxm == 0
-                    ytmp = R[1:initer, 1:initer] \ w[1:initer]
-                    additive = U[:, initer] * (-2 * ytmp[initer] * conj(U[initer, initer]))
+                    @views ytmp = R[1:initer, 1:initer] \ w[1:initer]
+                    @views additive = U[:, initer] * (-2 * ytmp[initer] * conj(U[initer, initer]))
                     additive[initer] += ytmp[initer]
                     for k = initer-1:-1:1
                         additive[k] += ytmp[k]
-                        Ut = @view U[:, k]
-                        additive -= Ut * (2 * dot(Ut, additive))
+                        @views additive -= U[:, k] * (2 * dot(U[:, k], additive))
                     end
                     if norm(additive) < eps() * norm(x)
                         stag += 1
@@ -191,17 +175,17 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
                     xm = x + additive
                     evalxm = 1
                 elseif evalxm == 1
-                    addvc = [-(R[1:initer-1, 1:initer-1] \ R[1:initer-1, initer]) * (w[initer] / R[initer, initer]); w[initer] / R[initer, initer]]
+                    @views addvc = [-(R[1:initer-1, 1:initer-1] \ R[1:initer-1, initer]) * (w[initer] / R[initer, initer]); w[initer] / R[initer, initer]]
                     if norm(addvc) < eps() * norm(xm)
                         stag += 1
                     else
                         stag = 0
                     end
-                    additive = U[:, initer] * (-2 * addvc[initer] * conj(U[initer, initer]))
+                    @views additive = U[:, initer] * (-2 * addvc[initer] * conj(U[initer, initer]))
                     additive[initer] += addvc[initer]
                     for k = initer-1:-1:1
                         additive[k] += addvc[k]
-                        additive -= U[:, k] * (2 * dot(U[:, k], additive))
+                        @views additive -= U[:, k] * (2 * dot(U[:, k], additive))
                     end
                     xm += additive
                 end
@@ -274,11 +258,11 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
             end
             if idx > 0 # Allow case inner==0 to flow through
                 y = R[1:idx, 1:idx] \ w[1:idx]
-                additive = U[:, idx] * (-2 * y[idx] * conj(U[idx, idx]))
+                @views additive = U[:, idx] * (-2 * y[idx] * conj(U[idx, idx]))
                 additive[idx] += y[idx]
                 for k = idx-1:-1:1
                     additive[k] += y[k]
-                    additive -= U[:, k] * (2 * dot(U[:, k], additive))
+                    @views additive -= U[:, k] * (2 * dot(U[:, k], additive))
                 end
                 x += additive
             end

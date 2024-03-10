@@ -22,7 +22,7 @@ end
 
 function compute_Circulant_Lp(circulant_centers,escalings,Nx,Ny,Nz)
     
-    enable_accuracy_Lp=0
+    # enable_accuracy_Lp=0
     
     #println("Lp computation started")
     escaling=escalings["Lp"]
