@@ -132,8 +132,8 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
                     S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - R_chiusura) / R_chiusura
                 else
                     S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4])) / R_chiusura
+                    S[c2, c1, k] = S[c1, c2, k]
                 end
-                S[c2, c1, k] = S[c1, c2, k]
             end
         end
     end
