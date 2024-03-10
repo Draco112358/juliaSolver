@@ -4,6 +4,7 @@ include("compute_row_P_sup.jl")
 function compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Nx, Ny, Nz, QS_Rcc_FW)
     # FFTCP, FFTCLp = Array{Array{ComplexF64}}(undef, 3, 3), nothing
     # if QS_Rcc_FW == 1
+    FFTW.set_num_threads(12)
     FFTCP = compute_Circulant_P_sup(circulant_centers, escalings, Nx, Ny, Nz)
     FFTCLp = compute_Circulant_Lp(circulant_centers, escalings, Nx, Ny, Nz)
 
@@ -20,7 +21,6 @@ end
 
 
 function compute_Circulant_Lp(circulant_centers,escalings,Nx,Ny,Nz)
-    FFTW.set_num_threads(12)
     
     enable_accuracy_Lp=0
     
@@ -66,9 +66,7 @@ function compute_Circulant_Lp(circulant_centers,escalings,Nx,Ny,Nz)
 end
 
 function compute_Circulant_P_sup(circulant_centers,escalings,Nx,Ny,Nz)
-    #println("P computation started")
-    FFTW.set_num_threads(12)
-    
+    #println("P computation started")    
     sx = circulant_centers["sx"]
     sy = circulant_centers["sy"]
     sz = circulant_centers["sz"]
