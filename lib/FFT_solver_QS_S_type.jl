@@ -37,16 +37,16 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     P2Vector = Matrix{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}}(undef, 3, 3)
     PLI2Vector = Matrix{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}(undef, 3, 3)
     Chi2Vector = Matrix{Array{ComplexF64, 3}}(undef, 3, 3)
-    Threads.@threads for cont1 = 1:3
+    for cont1 = 1:3
         for cont2 = cont1:3
             Nx::Int64 = size(FFTCP[cont1, cont2], 1) ÷ 2
             Ny::Int64 = size(FFTCP[cont1, cont2], 2) ÷ 2
             Nz::Int64 = size(FFTCP[cont1, cont2], 3) ÷ 2
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             #Chi = ifft(FFTCP[cont1, cont2] .* fft(padded_CircKt))
-            @inbounds P2Vector[cont1, cont2] = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
-            @inbounds PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2], flags=FFTW.MEASURE)
-            @inbounds Chi2Vector[cont1, cont2] = padded_CircKt
+            P2Vector[cont1, cont2] = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
+            PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2], flags=FFTW.MEASURE)
+            Chi2Vector[cont1, cont2] = padded_CircKt
         end
     end
 
