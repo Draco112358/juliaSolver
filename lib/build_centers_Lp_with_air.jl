@@ -4,7 +4,8 @@ function build_centers_Lp_with_air(grids, centri_Vox_with_air)
     Nx = size(grids[1], 1)
     Ny = size(grids[1][1], 1)
     Nz = size(grids[1][1][1], 1)
-    Cx = zeros((Nx - 1) * Ny * Nz, 3)
+    Cx = Array{Float64}(undef, (Nx - 1) * Ny * Nz, 3)
+    # Cx = zeros((Nx - 1) * Ny * Nz, 3)
     for cont in CartesianIndices((1:Nx-1, 1:Ny, 1:Nz))
         pos = from_3D_to_1D(cont[1], cont[2], cont[3], Nx - 1, Ny)
         A = centri_Vox_with_air[from_3D_to_1D(cont[1], cont[2], cont[3], Nx, Ny), :]
@@ -21,7 +22,8 @@ function build_centers_Lp_with_air(grids, centri_Vox_with_air)
     #         end
     #     end
     # end
-    Cy = zeros((Ny - 1) * Nx * Nz, 3)
+    Cy = Array{Float64}(undef, (Ny - 1) * Nx * Nz, 3)
+    # Cy = zeros((Ny - 1) * Nx * Nz, 3)
     for cont in CartesianIndices((1:Nx, 1:Ny-1, 1:Nz))
         pos = from_3D_to_1D(cont[1], cont[2], cont[3], Nx, Ny - 1)
         A = centri_Vox_with_air[from_3D_to_1D(cont[1], cont[2], cont[3], Nx, Ny), :]
@@ -38,7 +40,8 @@ function build_centers_Lp_with_air(grids, centri_Vox_with_air)
     #         end
     #     end
     # end
-    Cz = zeros((Nz - 1) * Nx * Ny, 3)
+    Cz = Array{Float64}(undef, (Nz - 1) * Nx * Ny, 3)
+    # Cz = zeros((Nz - 1) * Nx * Ny, 3)
     for cont in CartesianIndices((1:Nx, 1:Ny, 1:Nz-1))
         pos = from_3D_to_1D(cont[1], cont[2], cont[3], Nx, Ny)
         A = centri_Vox_with_air[from_3D_to_1D(cont[1], cont[2], cont[3], Nx, Ny), :]
