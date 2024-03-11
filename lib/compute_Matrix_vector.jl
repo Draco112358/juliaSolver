@@ -56,7 +56,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
                 padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
                 customIfftOptimized!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
                 Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 2), 1]
-                mul!(Q_exp, transpose(expansions["exp_P"][cont2, cont1]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
+                mul!(Q_exp, transpose(expansions["exp_P"][cont1, cont2]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
                 Y2 .= Y2 + Q_exp
             end
         end
