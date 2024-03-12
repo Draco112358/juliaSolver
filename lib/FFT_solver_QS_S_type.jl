@@ -57,8 +57,10 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
         end
     end
 
-    resProd = zeros(ComplexF64, 2*m,1)
-    tn = zeros(ComplexF64, m + ns + n, 1)
+    resProd = Array{ComplexF64}(undef, 2*m)
+    # resProd = zeros(ComplexF64, 2*m,1)
+    tn = Array{ComplexF64}(undef, m + ns + n)
+    # tn = zeros(ComplexF64, m + ns + n, 1)
 
     for k = 1:nfreq
         Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
@@ -164,15 +166,15 @@ function precond_3_3_Kt!(F, invZ, invP, A, Gamma, n1, n2, X3, Y, resProd)
     M5 = F\X3
     
     # Yi1 = @view Y[i1]
-    A_view = @view resProd[1:size(A,1),1]
-    invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end, 1]
+    A_view = @view resProd[1:size(A,1)]
+    invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end]
     mul!(A_view, A, M5)
     mul!(invZ_view, invZ, A_view)
     Y[i1] .= lmul!(-1.0, invZ_view)
     # Yi2 = @view Y[i2]
-    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,2)+1:end, 1]
+    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,2)+1:end]
     mul!(Gamma_view, transpose(Gamma), M5)
-    invP_view = @view resProd[1:size(invP,1),1]
+    invP_view = @view resProd[1:size(invP,1)]
     mul!(invP_view, invP, Gamma_view)
     Y[i2] .= invP_view
     # Yi3 = @view Y[i3]
