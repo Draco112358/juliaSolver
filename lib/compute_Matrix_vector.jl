@@ -1,4 +1,4 @@
-using MKL
+# using MKL
 
 function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector)
     m = size(incidence_selection["A"], 1)
@@ -6,7 +6,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
     I = @view x[1:m]
     Q = @view x[m+1:m+ns]
     Phi = @view x[m+ns+1:end]
-    resProd = zeros(ComplexF64, size(expansions["exp_P"][3, 2], 1), 1)
+    resProd = create_fft_results_array(expansions["exp_P"])
     # Lp * I ---------------------------------------------------------------
     mx = incidence_selection["mx"]
     my = incidence_selection["my"]
@@ -161,4 +161,15 @@ function fft_and_ifft_both_in_place!(PLIVector, PVector, padded_CircKt, FFTCLp)
     padded_CircKt .= FFTCLp .* padded_CircKt
     PLIVector*padded_CircKt
     return padded_CircKt
+end
+
+
+function create_fft_results_array(bigMmatrix)
+    max_size = 0
+    for cont1= 1:3, cont2= 1:3 
+        if size(bigMmatrix[cont1, cont2],1) > max_size
+            max_size = size(bigMmatrix[cont1, cont2],1)
+        end
+    end
+    return zeros(ComplexF64, max_size, 1)
 end

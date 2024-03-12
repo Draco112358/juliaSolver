@@ -1,4 +1,4 @@
-using MKL
+# using MKL
 using SparseArrays, IterativeSolvers, FFTW, LinearAlgebra, LinearMaps
 include("build_Yle_S.jl")
 include("compute_Z_self.jl")

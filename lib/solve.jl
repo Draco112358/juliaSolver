@@ -5,6 +5,7 @@ include("compute_FFT_mutual_coupling_mats.jl")
 include("mesher_FFT.jl")
 include("From_3D_to_1D.jl")
 
+using MKL
 using JSON, Profile, PProf
 using MLUtils: unsqueeze
 function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports)
