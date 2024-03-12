@@ -1,6 +1,6 @@
 using MKL
 
-function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector)
+function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector)
     m = size(incidence_selection["A"], 1)
     ns = size(incidence_selection["Gamma"], 2)
     I = @view x[1:m]
@@ -23,9 +23,9 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         CircKT = reshape(I_exp, Nx, Ny, Nz)
         padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
         padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-        customIfftOptimized!(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1], chiVector[cont])
+        fft_and_ifft_both_in_place!(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1])
         mat_map_lp_view = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1], 2), 1]
-        mul!(mat_map_lp_view, transpose(expansions["mat_map_Lp"][cont, 1]), reshape(chiVector[cont][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
+        mul!(mat_map_lp_view, transpose(expansions["mat_map_Lp"][cont, 1]), reshape(padded_CircKt[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
         @views Y1[ind_aux_Lp[cont]] = Y1[ind_aux_Lp[cont]] + mat_map_lp_view
     end
     A_view = @view resProd[1:size(incidence_selection["A"],1),1]
@@ -45,16 +45,21 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
             CircKT = reshape(Q_exp, Nx, Ny, Nz)
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-            customIfftOptimized!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
             Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 2), 1]
-            mul!(Q_exp, transpose(expansions["exp_P"][cont2, cont1]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
+            if cont1 == cont2
+                fft_and_ifft_both_in_place!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2])
+                mul!(Q_exp, transpose(expansions["exp_P"][cont2, cont1]), reshape(padded_CircKt[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
+            else
+                fft_and_in_place_ifft!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
+                mul!(Q_exp, transpose(expansions["exp_P"][cont2, cont1]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
+            end
             Y2 .= Y2 + Q_exp
             if cont1 != cont2
                 Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 1), 1]
                 mul!(Q_exp, expansions["exp_P"][cont2, cont1], Q)
                 CircKT = reshape(Q_exp, Nx, Ny, Nz)
                 padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-                customIfftOptimized!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
+                fft_and_in_place_ifft!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
                 Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 2), 1]
                 mul!(Q_exp, transpose(expansions["exp_P"][cont1, cont2]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
                 Y2 .= Y2 + Q_exp
@@ -144,9 +149,16 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
 end
 
 
-function customIfftOptimized!(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
+function fft_and_in_place_ifft!(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
     mul!(chiVector, PVector, padded_CircKt)
-    b = FFTCLp .* chiVector
-    mul!(chiVector, PLIVector, b)
+    chiVector .= FFTCLp .* chiVector
+    PLIVector*chiVector
     return chiVector
+end
+
+function fft_and_ifft_both_in_place!(PLIVector, PVector, padded_CircKt, FFTCLp)
+    PVector*padded_CircKt
+    padded_CircKt .= FFTCLp .* padded_CircKt
+    PLIVector*padded_CircKt
+    return padded_CircKt
 end

@@ -21,21 +21,22 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     Vrest = zeros(ComplexF64, m + n + ns, size(ports["port_nodes"], 1))
     invP::SparseMatrixCSC{Float64, Int64} = sparse(1:ns, 1:ns, 1 ./ diagonals["P"],ns,ns)
     R_chiusura = 50.0
-    PVector::Vector{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}} = []
-    PLIVector::Vector{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}=[]
-    ChiVector::Vector{Array{ComplexF64, 3}}=[]
+    PVector::Vector{FFTW.cFFTWPlan{ComplexF64, -1, true, 3, Tuple{Int64, Int64, Int64}}} = []
+    PLIVector::Vector{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, true, 3, UnitRange{Int64}}, Float64}}=[]
+    # ChiVector::Vector{Array{ComplexF64, 3}}=[]
     for cont = 1:3
             Nx::Int64 = size(FFTCLp[cont, 1], 1) ÷ 2
             Ny::Int64 = size(FFTCLp[cont, 1], 2) ÷ 2
             Nz::Int64 = size(FFTCLp[cont, 1], 3) ÷ 2
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
-            push!(PVector, plan_fft(padded_CircKt, flags=FFTW.MEASURE))
-            push!(PLIVector, plan_ifft(FFTCLp[cont, 1], flags=FFTW.MEASURE))
-            push!(ChiVector, padded_CircKt)
+            push!(PVector, plan_fft!(padded_CircKt, flags=FFTW.MEASURE))
+            push!(PLIVector, plan_ifft!(FFTCLp[cont, 1], flags=FFTW.MEASURE))
+            # push!(ChiVector, padded_CircKt)
     end
     
-    P2Vector = Matrix{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}}(undef, 3, 3)
-    PLI2Vector = Matrix{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, false, 3, UnitRange{Int64}}, Float64}}(undef, 3, 3)
+    # P2Vector = Matrix{FFTW.cFFTWPlan{ComplexF64, -1, false, 3, Tuple{Int64, Int64, Int64}}}(undef, 3, 3)
+    P2Vector = Matrix{Any}(undef, 3, 3)
+    PLI2Vector = Matrix{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, true, 3, UnitRange{Int64}}, Float64}}(undef, 3, 3)
     Chi2Vector = Matrix{Array{ComplexF64, 3}}(undef, 3, 3)
     for cont1 = 1:3
         for cont2 = cont1:3
@@ -44,9 +45,15 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
             Nz::Int64 = size(FFTCP[cont1, cont2], 3) ÷ 2
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             #Chi = ifft(FFTCP[cont1, cont2] .* fft(padded_CircKt))
-            P2Vector[cont1, cont2] = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
-            PLI2Vector[cont1, cont2] = plan_ifft(FFTCP[cont1, cont2], flags=FFTW.MEASURE)
-            Chi2Vector[cont1, cont2] = padded_CircKt
+            if cont1 != cont2
+                P2Vector[cont1, cont2] = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
+                Chi2Vector[cont1, cont2] = padded_CircKt
+            else
+                P2Vector[cont1, cont2] = plan_fft!(padded_CircKt, flags=FFTW.MEASURE)
+            end
+            # P2Vector[cont1, cont2] = plan_fft(padded_CircKt, flags=FFTW.MEASURE)
+            PLI2Vector[cont1, cont2] = plan_ifft!(FFTCP[cont1, cont2], flags=FFTW.MEASURE)
+            # Chi2Vector[cont1, cont2] = padded_CircKt
         end
     end
 
@@ -87,7 +94,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
                 #sol = solve(prob, KrylovJL_GMRES())
 
                 
-                V::Vector{ComplexF64}, flag, relres, iter, resvec = gmres_custom(tn, false, GMRES_settings["tol"][k], Inner_Iter, Vrest[:, c1], w[k], incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, F, PLIVector, PVector, PLI2Vector, P2Vector, ChiVector, Chi2Vector)
+                V::Vector{ComplexF64}, flag, relres, iter, resvec = gmres_custom(tn, false, GMRES_settings["tol"][k], Inner_Iter, Vrest[:, c1], w[k], incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, F, PLIVector, PVector, PLI2Vector, P2Vector, Chi2Vector)
                 tot_iter_number = (iter[1] - 1) * Inner_Iter + iter[2] + 1
                 if (flag == 0)
                     println("Flag $flag - Iteration = $k - Convergence reached, number of iterations:$tot_iter_number")

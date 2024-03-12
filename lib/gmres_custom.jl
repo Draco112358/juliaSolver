@@ -1,4 +1,4 @@
-function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector)
+function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector)
     m = size(b, 1)
     n = m
     if restarted
@@ -45,7 +45,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
     minupdated = 0;
     warned = false;
 
-    r = b - ComputeMatrixVector(x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector);
+    r = b - ComputeMatrixVector(x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector);
     normr = norm(r)
     if normr <= tolb
         x::Union{Vector{ComplexF64}, Vector{Float64}} .= xmin
@@ -109,7 +109,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
             
             
             # Apply A to v.
-            v = ComputeMatrixVector(v , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector);
+            v = ComputeMatrixVector(v , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector);
             #println(norm(v))
             # Form Pj*Pj-1*...P1*Av.
             for k = 1:initer
@@ -189,7 +189,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
                     end
                     xm += additive
                 end
-                r = b - ComputeMatrixVector(xm , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector);
+                r = b - ComputeMatrixVector(xm , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector);
                 if norm(r) <= tol * n2b
                     x = xm
                     flag = 0
@@ -267,7 +267,7 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
                 x += additive
             end
             xmin = x
-            r = b - ComputeMatrixVector(x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chiVector, chi2Vector);
+            r = b - ComputeMatrixVector(x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector);
             minv_r = r
             normr_act = norm(minv_r)
             r = minv_r
