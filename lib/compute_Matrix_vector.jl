@@ -143,67 +143,11 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
     Y[i2] .= Yi2 .+ invP_view
     
     Yi3 = @view Y[i3]
-    Y[i3] = Yi3 .+ M2 .- lmul!(1im*w,M4) .+ M5
+    Y[i3] .= Yi3 .+ M2 .- lmul!(1im*w,M4) .+ M5
 
     return Y
 end
 
-# function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
-    
-#     n1=length(X1)
-#     n2=length(X2)
-#     n3=length(X3)
-
-#     i1=range(1, stop=n1)
-#     i2=range(n1+1,stop=n1+n2)
-#     i3=range(n1+n2+1,stop=n1+n2+n3)
-
-#     Y=zeros(ComplexF64 , n1+n2+n3)
-    
-#     invZ_view = @view resProd[1:size(invZ,1)]
-#     mul!(invZ_view, invZ, X1)
-#     Yi1 = @view Y[i1]
-#     Y[i1] .= Yi1 .+ invZ_view
-#     # M1 = prod_real_complex(invZ, X1)
-   
-#     A_view = @view resProd[size(resProd,1)-size(A,2)+1:end]
-#     mul!(A_view, transpose(A), invZ_view)
-#     M2 = F\A_view
-    
-#     invP_view = @view resProd[1:size(invP,1)]
-#     mul!(invP_view, invP, X2)
-#     Yi2 = @view Y[i2]
-#     Y[i2] .= Yi2 .+ invP_view
-#     # M3 = prod_real_complex(invP, X2)  
-    
-#     Gamma_view = @view resProd[size(resProd,1)-size(Gamma,1)+1:end]
-#     mul!(Gamma_view, Gamma, invP_view)
-#     M4 = F\Gamma_view
-    
-#     M5 = F\X3
-    
-#     A_view = @view resProd[1:size(A,1)]
-#     mul!(A_view, A, M2)
-#     invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end]
-#     mul!(invZ_view, invZ, A_view)
-#     Y[i1] .= Y[i1] -lmul!(1.0, invZ_view)
-#     Y[i1] .= Y[i1] .+ lmul!(1im*w, (prod_real_complex((invZ),prod_real_complex((A), M4))))
-#     Y[i1] .= Y[i1] .- lmul!(1.0, (prod_real_complex((invZ),prod_real_complex((A), M5))))
-    
-#     Y[i2] .= Y[i2] .+ (prod_real_complex(invP,prod_real_complex((transpose(Gamma)), M2)))
-#     Y[i2] .= Y[i2] - lmul!(1im*w, (prod_real_complex(invP,prod_real_complex(transpose(Gamma), M4))))
-#     Y[i2] .= Y[i2] .+ (prod_real_complex(invP,prod_real_complex(transpose(Gamma), M5)))
-    
-#     Y[i3] .= Y[i3] .+ M2
-#     Y[i3] .= Y[i3] .- lmul!(1im*w, M4)
-#     Y[i3] .= Y[i3] .+ M5
-    
-#     return  Y
-# end
-
-function prod_real_complex(A, x)
-    return A*x
-end
 
 function fft_and_in_place_ifft!(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
     mul!(chiVector, PVector, padded_CircKt)
