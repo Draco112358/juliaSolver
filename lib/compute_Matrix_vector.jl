@@ -1,4 +1,4 @@
-# using MKL
+using MKL
 
 function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selection::Dict, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector)
     m = size(incidence_selection["A"], 1)
@@ -6,7 +6,7 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
     I = @view x[1:m]
     Q = @view x[m+1:m+ns]
     Phi = @view x[m+ns+1:end]
-    resProd = create_fft_results_array(expansions["exp_P"])
+    resProd = create_fft_results_vector(expansions["exp_P"])
     # Lp * I ---------------------------------------------------------------
     mx = incidence_selection["mx"]
     my = incidence_selection["my"]
@@ -18,17 +18,17 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
         Ny = size(FFTCLp[cont, 1], 2) ÷ 2
         Nz = size(FFTCLp[cont, 1], 3) ÷ 2
         Ired = I[ind_aux_Lp[cont]]
-        I_exp = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1],1),1]
+        I_exp = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1],1)]
         mul!(I_exp, expansions["mat_map_Lp"][cont, 1], Ired)
         CircKT = reshape(I_exp, Nx, Ny, Nz)
         padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
         padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
         fft_and_ifft_both_in_place!(PLIVector[cont], PVector[cont], padded_CircKt, FFTCLp[cont,1])
-        mat_map_lp_view = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1], 2), 1]
+        mat_map_lp_view = @view resProd[1:size(expansions["mat_map_Lp"][cont, 1], 2)]
         mul!(mat_map_lp_view, transpose(expansions["mat_map_Lp"][cont, 1]), reshape(padded_CircKt[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
         @views Y1[ind_aux_Lp[cont]] = Y1[ind_aux_Lp[cont]] + mat_map_lp_view
     end
-    A_view = @view resProd[1:size(incidence_selection["A"],1),1]
+    A_view = @view resProd[1:size(incidence_selection["A"],1)]
     mul!(A_view, incidence_selection["A"], Phi)
     Y1 =   lmul!(1im * w,Y1) + DZ .* I + A_view
     
@@ -40,12 +40,12 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
             Nx = size(FFTCP[cont1, cont2], 1) ÷ 2
             Ny = size(FFTCP[cont1, cont2], 2) ÷ 2
             Nz = size(FFTCP[cont1, cont2], 3) ÷ 2
-            Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 1), 1]
+            Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 1)]
             mul!(Q_exp, expansions["exp_P"][cont1, cont2], Q)
             CircKT = reshape(Q_exp, Nx, Ny, Nz)
             padded_CircKt = zeros(ComplexF64, 2*Nx,2*Ny,2*Nz)
             padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
-            Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 2), 1]
+            Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 2)]
             if cont1 == cont2
                 fft_and_ifft_both_in_place!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2])
                 mul!(Q_exp, transpose(expansions["exp_P"][cont2, cont1]), reshape(padded_CircKt[1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
@@ -55,27 +55,27 @@ function ComputeMatrixVector(x::Array{ComplexF64}, w::Float64, incidence_selecti
             end
             Y2 .= Y2 + Q_exp
             if cont1 != cont2
-                Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 1), 1]
+                Q_exp = @view resProd[1:size(expansions["exp_P"][cont2, cont1], 1)]
                 mul!(Q_exp, expansions["exp_P"][cont2, cont1], Q)
                 CircKT = reshape(Q_exp, Nx, Ny, Nz)
                 padded_CircKt[1:size(CircKT,1), 1:size(CircKT,2), 1:size(CircKT,3)] = CircKT
                 fft_and_in_place_ifft!(PLI2Vector[cont1,cont2], P2Vector[cont1,cont2], padded_CircKt, FFTCP[cont1,cont2], chi2Vector[cont1, cont2])
-                Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 2), 1]
+                Q_exp = @view resProd[1:size(expansions["exp_P"][cont1, cont2], 2)]
                 mul!(Q_exp, transpose(expansions["exp_P"][cont1, cont2]), reshape(chi2Vector[cont1, cont2][1:Nx, 1:Ny, 1:Nz], Nx * Ny * Nz))
                 Y2 .= Y2 + Q_exp
             end
         end
     end
-    Gamma_view = @view resProd[1:size(incidence_selection["Gamma"], 2), 1]
+    Gamma_view = @view resProd[1:size(incidence_selection["Gamma"], 2)]
     mul!(Gamma_view, transpose(incidence_selection["Gamma"]), Phi)
     Y2 .= Y2 + lmul!(-1.0, Gamma_view)
-    A_v2 = @view resProd[1:size(incidence_selection["A"], 2), 1]
+    A_v2 = @view resProd[1:size(incidence_selection["A"], 2)]
     mul!(A_v2, transpose(incidence_selection["A"]), I)
     Y3 .= Y3 + lmul!(-1.0, A_v2) 
-    Yle_view = @view resProd[1:size(Yle,1), 1]
+    Yle_view = @view resProd[1:size(Yle,1)]
     mul!(Yle_view, Yle, Phi)
     Y3 .= Y3 + Yle_view 
-    Gamma_v2 = @view resProd[1:size(incidence_selection["Gamma"],1), 1]
+    Gamma_v2 = @view resProd[1:size(incidence_selection["Gamma"],1)]
     mul!(Gamma_v2, incidence_selection["Gamma"], Q)
     Y3 .= Y3 +  lmul!(1im * w, Gamma_v2)
     MatrixVector = precond_3_3_vector(lu, invZ, invP, incidence_selection["A"], incidence_selection["Gamma"], w, vec(Y1), vec(Y2), vec(Y3), resProd)
@@ -96,21 +96,21 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
 
     Y=zeros(ComplexF64 , n1+n2+n3)
     
-    invZ_view = @view resProd[1:size(invZ,1),1]
+    invZ_view = @view resProd[1:size(invZ,1)]
     mul!(invZ_view, invZ, X1)
     Yi1 = @view Y[i1]
     Y[i1] .= Yi1 .+ invZ_view
    
-    A_view = @view resProd[size(resProd,1)-size(A,2)+1:end,1]
+    A_view = @view resProd[size(resProd,1)-size(A,2)+1:end]
     mul!(A_view, transpose(A), invZ_view)
     M2 = F\A_view
     
-    invP_view = @view resProd[1:size(invP,1),1]
+    invP_view = @view resProd[1:size(invP,1)]
     mul!(invP_view, invP, X2)
     Yi2 = @view Y[i2]
     Y[i2] .= Yi2 .+ invP_view
     
-    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,1)+1:end,1]
+    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,1)+1:end]
     mul!(Gamma_view, Gamma, invP_view)
     M4 = F\Gamma_view
     
@@ -118,9 +118,9 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
     
 
     # Yi1 = @view Y[i1]  
-    A_view = @view resProd[1:size(A,1),1]
+    A_view = @view resProd[1:size(A,1)]
     mul!(A_view, A, M2)
-    invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end,1]
+    invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end]
     mul!(invZ_view, invZ, A_view)
     Y[i1] .= Yi1 .-lmul!(1.0, invZ_view)
     mul!(A_view, A, M4)
@@ -131,7 +131,7 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
     Y[i1] .= Yi1 .- lmul!(1.0,invZ_view) 
 
     # Yi2 = @view Y[i2]
-    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,2)+1:end,1]
+    Gamma_view = @view resProd[size(resProd,1)-size(Gamma,2)+1:end]
     mul!(Gamma_view, transpose(Gamma), M2)
     mul!(invP_view, invP, Gamma_view)
     Y[i2] .= Yi2 .+ invP_view 
@@ -148,6 +148,62 @@ function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
     return Y
 end
 
+# function precond_3_3_vector(F,invZ,invP,A,Gamma,w,X1,X2,X3, resProd)
+    
+#     n1=length(X1)
+#     n2=length(X2)
+#     n3=length(X3)
+
+#     i1=range(1, stop=n1)
+#     i2=range(n1+1,stop=n1+n2)
+#     i3=range(n1+n2+1,stop=n1+n2+n3)
+
+#     Y=zeros(ComplexF64 , n1+n2+n3)
+    
+#     invZ_view = @view resProd[1:size(invZ,1)]
+#     mul!(invZ_view, invZ, X1)
+#     Yi1 = @view Y[i1]
+#     Y[i1] .= Yi1 .+ invZ_view
+#     # M1 = prod_real_complex(invZ, X1)
+   
+#     A_view = @view resProd[size(resProd,1)-size(A,2)+1:end]
+#     mul!(A_view, transpose(A), invZ_view)
+#     M2 = F\A_view
+    
+#     invP_view = @view resProd[1:size(invP,1)]
+#     mul!(invP_view, invP, X2)
+#     Yi2 = @view Y[i2]
+#     Y[i2] .= Yi2 .+ invP_view
+#     # M3 = prod_real_complex(invP, X2)  
+    
+#     Gamma_view = @view resProd[size(resProd,1)-size(Gamma,1)+1:end]
+#     mul!(Gamma_view, Gamma, invP_view)
+#     M4 = F\Gamma_view
+    
+#     M5 = F\X3
+    
+#     A_view = @view resProd[1:size(A,1)]
+#     mul!(A_view, A, M2)
+#     invZ_view = @view resProd[size(resProd,1)-size(invZ,1)+1:end]
+#     mul!(invZ_view, invZ, A_view)
+#     Y[i1] .= Y[i1] -lmul!(1.0, invZ_view)
+#     Y[i1] .= Y[i1] .+ lmul!(1im*w, (prod_real_complex((invZ),prod_real_complex((A), M4))))
+#     Y[i1] .= Y[i1] .- lmul!(1.0, (prod_real_complex((invZ),prod_real_complex((A), M5))))
+    
+#     Y[i2] .= Y[i2] .+ (prod_real_complex(invP,prod_real_complex((transpose(Gamma)), M2)))
+#     Y[i2] .= Y[i2] - lmul!(1im*w, (prod_real_complex(invP,prod_real_complex(transpose(Gamma), M4))))
+#     Y[i2] .= Y[i2] .+ (prod_real_complex(invP,prod_real_complex(transpose(Gamma), M5)))
+    
+#     Y[i3] .= Y[i3] .+ M2
+#     Y[i3] .= Y[i3] .- lmul!(1im*w, M4)
+#     Y[i3] .= Y[i3] .+ M5
+    
+#     return  Y
+# end
+
+function prod_real_complex(A, x)
+    return A*x
+end
 
 function fft_and_in_place_ifft!(PLIVector, PVector, padded_CircKt, FFTCLp, chiVector)
     mul!(chiVector, PVector, padded_CircKt)
@@ -164,12 +220,12 @@ function fft_and_ifft_both_in_place!(PLIVector, PVector, padded_CircKt, FFTCLp)
 end
 
 
-function create_fft_results_array(bigMmatrix)
+function create_fft_results_vector(bigMmatrix)
     max_size = 0
     for cont1= 1:3, cont2= 1:3 
         if size(bigMmatrix[cont1, cont2],1) > max_size
             max_size = size(bigMmatrix[cont1, cont2],1)
         end
     end
-    return zeros(ComplexF64, max_size, 1)
+    return zeros(ComplexF64, 2*max_size)
 end

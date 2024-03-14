@@ -1,4 +1,4 @@
-# using MKL
+using MKL
 using SparseArrays, IterativeSolvers, FFTW, LinearAlgebra, LinearMaps
 include("build_Yle_S.jl")
 include("compute_Z_self.jl")
@@ -102,9 +102,9 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
                     println("Flag $flag - Iteration = $k - Convergence reached, number of iterations:$tot_iter_number")
                 end
 
-                # if (flag == 1)
-                #     println("Flag $flag - Iteration = $k - Convergence not reached, number of iterations:$Inner_Iter")
-                # end
+                if (flag == 1)
+                    println("Flag $flag - Iteration = $k - Convergence not reached, number of iterations:$Inner_Iter")
+                end
                 #V, info = IterativeSolvers.gmres!(x0, prodts, tn; reltol=GMRES_settings.tol[k], restart=Inner_Iter, maxiter=Inner_Iter, initially_zero=false, log=true, verbose=false)
                 # V, info = IterativeSolvers.gmres(prodts, tn; reltol=GMRES_settings.tol[k], restart=Inner_Iter, maxiter=Inner_Iter, initially_zero=false, log=true, verbose=false)
                 #println(info)

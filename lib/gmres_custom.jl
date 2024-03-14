@@ -21,9 +21,9 @@ function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFT
     if (n2b == 0)                    
         a::Union{Vector{ComplexF64}, Vector{Float64}} = zeros(n,1);              
         flag::Int64 = 0;                    
-        relres::Float64 = 0;                  
+        relres::Float64 = 0.0;                  
         iter::Vector{Int64} = [0 0];                
-        resvec::Vector{Float64} = [0];                  
+        resvec::Vector{Float64} = [0.0];                  
         return a, flag, relres, iter, resvec
     end
 
