@@ -6,7 +6,7 @@ include("mesher_FFT.jl")
 include("From_3D_to_1D.jl")
 
 using MKL
-using JSON, Profile, PProf
+using JSON, Profile, PProf, PyPlot
 using MLUtils: unsqueeze
 function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports)
     z = [[[[0.1, 0.0]]]]
@@ -197,10 +197,10 @@ function create_volumes_mapping_v2(grids)
     num_grids = length(grids)
     #println(size(grids))
     #Nx, Ny, Nz = size(grids[1])
-    Nx = size(grids[1],1)
-    Ny = size(grids[1][1],1)
-    Nz = size(grids[1][1][1],1)
-    mapping = zeros(Nx*Ny*Nz)
+    Nx = size(grids[1], 1)
+    Ny = size(grids[1][1], 1)
+    Nz = size(grids[1][1][1], 1)
+    mapping = zeros(Nx * Ny * Nz)
     num_ele = 0
     for cont3 = 1:Nz
         for cont2 = 1:Ny
@@ -271,6 +271,23 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams)
     #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
     out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
     #PProf.pprof()
+
+
+    PyPlot.figure()
+    semilogx(freq, real(reshape(out["Z"][1, 1, :], (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
+    xlim([freq[1], 1e9])
+    xlabel("Frequency [Hz]", fontsize=14)
+    ylabel("R [Ω]", fontsize=14)
+    # PyPlot.legend(["JULIA"], loc="upper left", fancybox="true")
+    gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
+
+    PyPlot.figure()
+    semilogx(freq, imag(reshape(out["Z"][1, 1, :] ./ (2 * pi * freq') * 1e9, (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
+    xlim([freq[1], 1e9])
+    xlabel("Frequency [Hz]", fontsize=14)
+    ylabel("L [nH]", fontsize=14)
+    gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
+
     return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
     #return ""
 end
