@@ -4,7 +4,7 @@ include("build_Yle_S.jl")
 include("compute_Z_self.jl")
 include("gmres_custom.jl")
 
-function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)  
+function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW,client)  
     freq = freq .* escalings["freq"]
     # GMRES settings ----------------------------
     
@@ -63,6 +63,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     # tn = zeros(ComplexF64, m + ns + n, 1)
 
     for k = 1:nfreq
+        send(client, k)
         Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
         Z_self::Vector{ComplexF64} = compute_Z_self(diagonals["R"], diagonals["Cd"], w[k])
         Zs::Matrix{ComplexF64} = escalings["R"] * (Zs_info["Zs"] * sqrt(w[k] / escalings["freq"]))

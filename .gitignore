@@ -44,6 +44,3 @@ node_modules/
 
 # Database
 db/*.sqlite
-
-# environment variables file
-.env

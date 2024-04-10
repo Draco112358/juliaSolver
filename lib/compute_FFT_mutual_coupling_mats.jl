@@ -1,12 +1,15 @@
 include("compute_Lp_Voxels.jl")
 include("compute_row_P_sup.jl")
+import SimpleWebsockets
 
-function compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Nx, Ny, Nz, QS_Rcc_FW)
+function compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Nx, Ny, Nz, QS_Rcc_FW, client)
     # FFTCP, FFTCLp = Array{Array{ComplexF64}}(undef, 3, 3), nothing
     # if QS_Rcc_FW == 1
     FFTW.set_num_threads(12)
     FFTCP = compute_Circulant_P_sup(circulant_centers, escalings, Nx, Ny, Nz)
+    send(client, "P Computing Completed")
     FFTCLp = compute_Circulant_Lp(circulant_centers, escalings, Nx, Ny, Nz)
+    send(client, "Lp Computing Completed")
 
     # elseif QS_Rcc_FW == 2
     #     distance_method = "RCC" # RCC AVG MIN
