@@ -1,4 +1,4 @@
-using Genie, Genie.Renderer, Genie.Renderer.Html, Genie.Renderer.Json, Genie.Requests, AWS, AWSS3, SimpleWebsockets
+using Genie, Genie.Renderer, Genie.Renderer.Html, Genie.Renderer.Json, Genie.Requests, AWS, AWSS3, SimpleWebsockets, Base.Threads
 include("./lib/solve.jl")
 
 Genie.config.run_as_server = true
@@ -18,6 +18,7 @@ server = WebsocketServer()
 
 @async serve(server; verbose = false)
 
+const stopComputation = []
 
 route("/") do
   serve_static_file("welcome.html")
@@ -27,7 +28,14 @@ route("/electron") do
   return "Prova api Genie - Electron!"
 end
 
-listen(server, :client) do client 
+listen(server, :client) do client
+  listen(client, :message) do message
+    println(message)
+    if message=="Stop computation"
+      #error("stop computation")
+      push!(stopComputation, 1)
+    end
+  end
   route("/solving" ,method="POST") do 
     p = S3Path("s3://models-bucket-49718971291/"*jsonpayload()["mesherFileId"])
     mesherOutput = JSON.parse(read(p, String))

@@ -63,6 +63,10 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     # tn = zeros(ComplexF64, m + ns + n, 1)
 
     for k = 1:nfreq
+        if length(stopComputation) > 0
+            pop!(stopComputation)
+            return false
+        end
         send(client, k)
         Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
         Z_self::Vector{ComplexF64} = compute_Z_self(diagonals["R"], diagonals["Cd"], w[k])
