@@ -1,3 +1,5 @@
+include("compute_Matrix_vector.jl")
+
 function gmres_custom(b, restarted, tol, maxit, x , wk, incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, lu, PLIVector, PVector, PLI2Vector, P2Vector, chi2Vector)
     m = size(b, 1)
     n = m
