@@ -32,9 +32,9 @@ function compute_diagonals(escalings, materials, sx, sy, sz, lix_mat, liy_mat, l
     Rx = zeros(size(lix_border,1), 4)
     Ry = zeros(size(liy_border,1), 4)
     Rz = zeros(size(liz_border,1), 4)
-    Cx = zeros(Complex64, size(lix_border,1), 4)
-    Cy = zeros(Complex64, size(liy_border,1), 4)
-    Cz = zeros(Complex64, size(liz_border,1), 4)
+    Cx = zeros(ComplexF64, size(lix_border,1), 4)
+    Cy = zeros(ComplexF64, size(liy_border,1), 4)
+    Cz = zeros(ComplexF64, size(liz_border,1), 4)
     for cont in range(1,length(materials))
         if materials[cont]["Rx"] != 0
             ind_m = findall(x -> x == cont, lix_mat[:, 1])
