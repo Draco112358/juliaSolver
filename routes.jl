@@ -43,9 +43,10 @@ listen(server, :client) do client
   end
 end
 
-# route("/test_solving" ,method="POST") do 
-#   println("-------------------- SOLVING... -----------------------")
-#   solving_result = doSolving(jsonpayload()["mesherOutput"], jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"])
-#   println("-------------------- SOLVING FINISHED! -----------------------")
-#   return JSON.json(solving_result)
-# end
+
+route("/test_solving" ,method="POST") do 
+  println("-------------------- SOLVING... -----------------------")
+  solving_result = doSolvingTest(jsonpayload()["mesherOutput"], jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"])
+  println("-------------------- SOLVING FINISHED! -----------------------")
+  return JSON.json(solving_result)
+end

@@ -296,3 +296,82 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
     return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
     #return ""
 end
+
+
+function doSolvingTest(mesherOutput, solverInput, solverAlgoParams)
+    #println(Base.Threads.nthreads())
+    mesherDict = mesherOutput
+    inputDict = solverInput
+    unit = solverInput["unit"]
+    escal = getEscalFrom(unit)
+
+    sx, sy, sz = mesherDict["cell_size"]["cell_size_x"] * 1000 * escal, mesherDict["cell_size"]["cell_size_y"] * 1000 * escal, mesherDict["cell_size"]["cell_size_z"] * 1000 * escal
+
+    origin = (mesherDict["origin"]["origin_x"], mesherDict["origin"]["origin_y"], mesherDict["origin"]["origin_z"])
+
+    testarray = [copy(value) for (index, value) in mesherDict["mesher_matrices"]]
+
+    grids = [unsqueeze(values, dims=2) for values in testarray]
+
+    frequencies = inputDict["frequencies"]
+    freq = Array{Float64}(undef, 1, length(frequencies))
+    for i in range(1, length(frequencies))
+        freq[1, i] = frequencies[i]
+    end
+    #freq = convert(Array{Float64}, freq)
+
+    n_freq = length(freq)
+
+    PORTS = read_ports(inputDict["ports"], escal)
+
+    L_ELEMENTS = read_lumped_elements(inputDict["lumped_elements"], escal)
+
+    MATERIALS = [material(el) for el in inputDict["materials"]]
+    SIGNALS = [el for el in inputDict["signals"]]
+
+    # # START SETTINGS--------------------------------------------
+    # ind_low_freq= filter(i -> !iszero(freq[i]), findall(f -> f<1e5, frequencies))
+    # tol[ind_low_freq] .= 1e-7
+    GMRES_settings = Dict("Inner_Iter" => solverAlgoParams["innerIteration"], "Outer_Iter" => solverAlgoParams["outerIteration"], "tol" => solverAlgoParams["convergenceThreshold"] * ones((n_freq)))
+    QS_Rcc_FW = 1 # 1 QS, 2 Rcc, 3 Taylor
+    use_escalings = 1
+    mapping_vols, num_centri = create_volumes_mapping_v2(grids)
+    centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
+    externals_grids = create_Grids_externals(grids)
+    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin)
+    if length(stopComputation) > 0
+        pop!(stopComputation)
+        return false
+    end
+    FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats_test(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW)
+    println("time for solver")
+    #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
+    if length(stopComputation) > 0
+        pop!(stopComputation)
+        return false
+    end
+    out = @time FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
+    if out == false
+        return false;
+    end
+    #PProf.pprof()
+
+
+    # PyPlot.figure()
+    # semilogx(freq, real(reshape(out["Z"][1, 1, :], (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
+    # xlim([freq[1], 1e9])
+    # xlabel("Frequency [Hz]", fontsize=14)
+    # ylabel("R [Ω]", fontsize=14)
+    # # PyPlot.legend(["JULIA"], loc="upper left", fancybox="true")
+    # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
+
+    # PyPlot.figure()
+    # semilogx(freq, imag(reshape(out["Z"][1, 1, :] ./ (2 * pi * freq') * 1e9, (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
+    # xlim([freq[1], 1e9])
+    # xlabel("Frequency [Hz]", fontsize=14)
+    # ylabel("L [nH]", fontsize=14)
+    # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
+
+    return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
+    #return ""
+end
