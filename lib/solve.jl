@@ -74,10 +74,13 @@ function port_def(port_start, port_end, port_voxels, port_nodes, surf_s_port_nod
     )
 end
 
-function le_def(value, type, le_start, le_end, le_voxels, le_nodes, surf_s_le_nodes, surf_e_le_nodes)
+function le_def(value, type, le_start, le_end, le_voxels, le_nodes, surf_s_le_nodes, surf_e_le_nodes, R_value, L_value, C_value)
     return Dict(
         "value" => value,
         "type" => type,
+        "R_value" => R_value,
+        "L_value" => L_value,
+        "C_value" => C_value,
         "le_start" => le_start,
         "le_end" => le_end,
         "le_voxels" => le_voxels,
@@ -130,6 +133,9 @@ function read_lumped_elements(lumped_elements_objects, escal)
     output_positions = []
     values = []
     types = []
+    R_values = []
+    L_values = []
+    C_values = []
     N_LUMPED_ELEMENTS = length(lumped_elements_objects)
     if N_LUMPED_ELEMENTS == 0
         lumped_elements_out = le_def(zeros(0), zeros(Int64, 0), zeros((0, 3)), zeros((0, 3)), zeros(Int64, (0, 2)), zeros(Int64, (0, 2)), Array{Any}(undef, 0), Array{Any}(undef, 0))
@@ -155,16 +161,31 @@ function read_lumped_elements(lumped_elements_objects, escal)
             ltype = zeros(Int64, 1)
             ltype[1] = lumped_element_object.type
             push!(types, ltype)
+
+            r_value = zeros(Int64, 1)
+            r_value[1] = hasproperty(lumped_element_object.rlcParams, :resistance) ? lumped_element_object.rlcParams.resistance : 0.0
+            push!(R_values, r_value)
+
+            l_value = zeros(Int64, 1)
+            l_value[1] = hasproperty(lumped_element_object.rlcParams, :inductance) ? lumped_element_object.rlcParams.inductance : 0.0
+            push!(L_values, l_value)
+
+            c_value = zeros(Int64, 1)
+            c_value[1] = hasproperty(lumped_element_object.rlcParams, :capacitance) ? lumped_element_object.rlcParams.capacitance : 0.0
+            push!(C_values, c_value)
         end
 
-        @assert length(input_positions) == N_LUMPED_ELEMENTS && length(output_positions) == N_LUMPED_ELEMENTS && length(values) == N_LUMPED_ELEMENTS && length(types) == N_LUMPED_ELEMENTS
+        @assert length(input_positions) == N_LUMPED_ELEMENTS && length(output_positions) == N_LUMPED_ELEMENTS && length(values) == N_LUMPED_ELEMENTS && length(types) == N_LUMPED_ELEMENTS && length(R_values) == N_LUMPED_ELEMENTS && length(L_values) == N_LUMPED_ELEMENTS && length(C_values) == N_LUMPED_ELEMENTS
 
         value = [i[1] for i in values]
         type = [i[1] for i in types]
+        R_value = [i[1] for i in R_values]
+        L_value = [i[1] for i in L_values]
+        C_value = [i[1] for i in C_values]
         in_pos = [unsqueeze([i], dims=2) for i in input_positions]
         out_pos = [unsqueeze([i], dims=2) for i in output_positions]
 
-        lumped_elements_out = le_def(value, type, in_pos, out_pos, zeros(Int64, (N_LUMPED_ELEMENTS, 2)), (Int64, (N_LUMPED_ELEMENTS, 2)), Array{Any}(undef, 0), Array{Any}(undef, 0))
+        lumped_elements_out = le_def(value, type, in_pos, out_pos, zeros(Int64, (N_LUMPED_ELEMENTS, 2)), (Int64, (N_LUMPED_ELEMENTS, 2)), Array{Any}(undef, 0), Array{Any}(undef, 0), R_value, L_value, C_value)
     end
     return lumped_elements_out
 end
