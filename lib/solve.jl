@@ -138,7 +138,7 @@ function read_lumped_elements(lumped_elements_objects, escal)
     C_values = []
     N_LUMPED_ELEMENTS = length(lumped_elements_objects)
     if N_LUMPED_ELEMENTS == 0
-        lumped_elements_out = le_def(zeros(0), zeros(Int64, 0), zeros((0, 3)), zeros((0, 3)), zeros(Int64, (0, 2)), zeros(Int64, (0, 2)), Array{Any}(undef, 0), Array{Any}(undef, 0))
+        lumped_elements_out = le_def(zeros(0), zeros(Int64, 0), zeros((0, 3)), zeros((0, 3)), zeros(Int64, (0, 2)), zeros(Int64, (0, 2)), Array{Any}(undef, 0), Array{Any}(undef, 0), R_values, L_values, C_values)
         @assert length(input_positions) == N_LUMPED_ELEMENTS && length(output_positions) == N_LUMPED_ELEMENTS && length(values) == N_LUMPED_ELEMENTS && length(types) == N_LUMPED_ELEMENTS
     else
         for lumped_element_object in lumped_elements_objects
@@ -245,6 +245,7 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
     inputDict = solverInput
     unit = solverInput["unit"]
     escal = getEscalFrom(unit)
+    ports_scatter_value = haskey(solverInput, "ports_scattering_value") ? solverInput["ports_scattering_value"] : 50.0
 
     sx, sy, sz = mesherDict["cell_size"]["cell_size_x"] * 1000 * escal, mesherDict["cell_size"]["cell_size_y"] * 1000 * escal, mesherDict["cell_size"]["cell_size_z"] * 1000 * escal
 
@@ -291,7 +292,7 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
         pop!(stopComputation)
         return false
     end
-    out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, client)
+    out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, client)
     if out == false
         return false;
     end
@@ -325,6 +326,7 @@ function doSolvingTest(mesherOutput, solverInput, solverAlgoParams)
     inputDict = solverInput
     unit = solverInput["unit"]
     escal = getEscalFrom(unit)
+    ports_scatter_value = haskey(solverInput, "ports_scattering_value") ? solverInput["ports_scattering_value"] : 50.0
 
     sx, sy, sz = mesherDict["cell_size"]["cell_size_x"] * 1000 * escal, mesherDict["cell_size"]["cell_size_y"] * 1000 * escal, mesherDict["cell_size"]["cell_size_z"] * 1000 * escal
 
@@ -371,7 +373,7 @@ function doSolvingTest(mesherOutput, solverInput, solverAlgoParams)
         pop!(stopComputation)
         return false
     end
-    out = @time FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
+    out = @time FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)
     if out == false
         return false;
     end

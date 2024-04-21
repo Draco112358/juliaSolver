@@ -4,7 +4,7 @@ include("build_Yle_S.jl")
 include("compute_Z_self.jl")
 include("gmres_custom.jl")
 
-function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW,client)  
+function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW,client)  
     freq = freq .* escalings["freq"]
     # GMRES settings ----------------------------
     
@@ -20,7 +20,6 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     S = zeros(ComplexF64, size(ports["port_nodes"], 1), size(ports["port_nodes"], 1), length(freq))
     Vrest = zeros(ComplexF64, m + n + ns, size(ports["port_nodes"], 1))
     invP::SparseMatrixCSC{Float64, Int64} = sparse(1:ns, 1:ns, 1 ./ diagonals["P"],ns,ns)
-    R_chiusura = 50.0
     PVector::Vector{FFTW.cFFTWPlan{ComplexF64, -1, true, 3, Tuple{Int64, Int64, Int64}}} = []
     PLIVector::Vector{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, true, 3, UnitRange{Int64}}, Float64}}=[]
     # ChiVector::Vector{Array{ComplexF64, 3}}=[]
@@ -68,7 +67,7 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
             return false
         end
         send(client, k)
-        Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
+        Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], ports_scatter_value)
         Z_self::Vector{ComplexF64} = compute_Z_self(diagonals["R"], diagonals["Cd"], w[k])
         Zs::Matrix{ComplexF64} = escalings["R"] * (Zs_info["Zs"] * sqrt(w[k] / escalings["freq"]))
         Zs_minus_Zself = real.(Zs[Zs_info["surface_edges"]]) .- real.(Z_self[Zs_info["surface_edges"]])
@@ -143,9 +142,9 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
                 n3::Int64 = convert(Int32, ports["port_nodes"][c2, 1])
                 n4::Int64 = convert(Int32, ports["port_nodes"][c2, 2])
                 if c1 == c2
-                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - R_chiusura) / R_chiusura
+                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - ports_scatter_value) / ports_scatter_value
                 else
-                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4])) / R_chiusura
+                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4])) / ports_scatter_value
                     S[c2, c1, k] = S[c1, c2, k]
                 end
             end
@@ -153,15 +152,15 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
     end
     out::Dict = Dict()
     out["S"] = S
-    out["Z"] = s2z(S, R_chiusura)
-    out["Y"] = s2y(S, R_chiusura)
+    out["Z"] = s2z(S, ports_scatter_value)
+    out["Y"] = s2y(S, ports_scatter_value)
     out["f"] = freq ./ escalings["freq"]
     return out
       
 end
 
 
-function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)  
+function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW)  
     freq = freq .* escalings["freq"]
     # GMRES settings ----------------------------
     
@@ -177,7 +176,6 @@ function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, 
     S = zeros(ComplexF64, size(ports["port_nodes"], 1), size(ports["port_nodes"], 1), length(freq))
     Vrest = zeros(ComplexF64, m + n + ns, size(ports["port_nodes"], 1))
     invP::SparseMatrixCSC{Float64, Int64} = sparse(1:ns, 1:ns, 1 ./ diagonals["P"],ns,ns)
-    R_chiusura = 50.0
     PVector::Vector{FFTW.cFFTWPlan{ComplexF64, -1, true, 3, Tuple{Int64, Int64, Int64}}} = []
     PLIVector::Vector{AbstractFFTs.ScaledPlan{ComplexF64, FFTW.cFFTWPlan{ComplexF64, 1, true, 3, UnitRange{Int64}}, Float64}}=[]
     # ChiVector::Vector{Array{ComplexF64, 3}}=[]
@@ -224,7 +222,7 @@ function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, 
             pop!(stopComputation)
             return false
         end
-        Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], R_chiusura)
+        Yle::SparseArrays.SparseMatrixCSC{Float64, Int64} = build_Yle_S(lumped_elements, [], ports, escalings, n, w[k] / escalings["freq"], ports_scatter_value)
         Z_self::Vector{ComplexF64} = compute_Z_self(diagonals["R"], diagonals["Cd"], w[k])
         Zs::Matrix{ComplexF64} = escalings["R"] * (Zs_info["Zs"] * sqrt(w[k] / escalings["freq"]))
         Zs_minus_Zself = real.(Zs[Zs_info["surface_edges"]]) .- real.(Z_self[Zs_info["surface_edges"]])
@@ -299,9 +297,9 @@ function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, 
                 n3::Int64 = convert(Int32, ports["port_nodes"][c2, 1])
                 n4::Int64 = convert(Int32, ports["port_nodes"][c2, 2])
                 if c1 == c2
-                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - R_chiusura) / R_chiusura
+                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4]) - ports_scatter_value) / ports_scatter_value
                 else
-                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4])) / R_chiusura
+                    S[c1, c2, k] = (2 * (V[m+ns+n3] - V[m+ns+n4])) / ports_scatter_value
                     S[c2, c1, k] = S[c1, c2, k]
                 end
             end
@@ -309,8 +307,8 @@ function FFT_solver_QS_S_type_test(freq, escalings, incidence_selection, FFTCP, 
     end
     out::Dict = Dict()
     out["S"] = S
-    out["Z"] = s2z(S, R_chiusura)
-    out["Y"] = s2y(S, R_chiusura)
+    out["Z"] = s2z(S, ports_scatter_value)
+    out["Y"] = s2y(S, ports_scatter_value)
     out["f"] = freq ./ escalings["freq"]
     return out
       
