@@ -269,7 +269,7 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
     L_ELEMENTS = read_lumped_elements(inputDict["lumped_elements"], escal)
 
     MATERIALS = [material(el) for el in inputDict["materials"]]
-    SIGNALS = [el for el in inputDict["signals"]]
+    #SIGNALS = [el for el in inputDict["signals"]]
 
     # # START SETTINGS--------------------------------------------
     # ind_low_freq= filter(i -> !iszero(freq[i]), findall(f -> f<1e5, frequencies))
