@@ -242,12 +242,13 @@ end
 function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
     #println(Base.Threads.nthreads())
     mesherDict = mesherOutput
+    println(mesherDict["cell_size"])
     inputDict = solverInput
     unit = solverInput["unit"]
     escal = getEscalFrom(unit)
     ports_scatter_value = haskey(solverInput, "ports_scattering_value") ? solverInput["ports_scattering_value"] : 50.0
 
-    sx, sy, sz = mesherDict["cell_size"]["cell_size_x"] * 1000 * escal, mesherDict["cell_size"]["cell_size_y"] * 1000 * escal, mesherDict["cell_size"]["cell_size_z"] * 1000 * escal
+    sx, sy, sz = mesherDict["cell_size"]["cell_size_x"] * escal, mesherDict["cell_size"]["cell_size_y"] * escal, mesherDict["cell_size"]["cell_size_z"] * escal
 
     origin = (mesherDict["origin"]["origin_x"], mesherDict["origin"]["origin_y"], mesherDict["origin"]["origin_z"])
 
