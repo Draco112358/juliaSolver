@@ -242,7 +242,6 @@ end
 function doSolving(mesherOutput, solverInput, solverAlgoParams, client)
     #println(Base.Threads.nthreads())
     mesherDict = mesherOutput
-    println(mesherDict["cell_size"])
     inputDict = solverInput
     unit = solverInput["unit"]
     escal = getEscalFrom(unit)
