@@ -162,15 +162,15 @@ function read_lumped_elements(lumped_elements_objects, escal)
             ltype[1] = lumped_element_object.type
             push!(types, ltype)
 
-            r_value = zeros(Int64, 1)
+            r_value = zeros(Float64, 1)
             r_value[1] = hasproperty(lumped_element_object.rlcParams, :resistance) ? lumped_element_object.rlcParams.resistance : 0.0
             push!(R_values, r_value)
 
-            l_value = zeros(Int64, 1)
+            l_value = zeros(Float64, 1)
             l_value[1] = hasproperty(lumped_element_object.rlcParams, :inductance) ? lumped_element_object.rlcParams.inductance : 0.0
             push!(L_values, l_value)
 
-            c_value = zeros(Int64, 1)
+            c_value = zeros(Float64, 1)
             c_value[1] = hasproperty(lumped_element_object.rlcParams, :capacitance) ? lumped_element_object.rlcParams.capacitance : 0.0
             push!(C_values, c_value)
         end
