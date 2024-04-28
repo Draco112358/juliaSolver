@@ -1,0 +1,586 @@
+{
+    "solverAlgoParams": {
+        "innerIteration": 100,
+        "outerIteration": 1,
+        "convergenceThreshold": 0.0001
+    },
+    "mesherOutput": {
+        "cell_size": {
+            "cell_size_x": 2,
+            "cell_size_z": 1,
+            "cell_size_y": 2
+        },
+        "origin": {
+            "origin_y": 0,
+            "origin_x": 0,
+            "origin_z": 0
+        },
+        "materials": {
+            "1": "MaterialeProva"
+        },
+        "mesh_is_valid": {
+            "valid": true
+        },
+        "n_materials": 1,
+        "n_cells": {
+            "n_cells_z": 2,
+            "n_cells_x": 12,
+            "n_cells_y": 6
+        },
+        "mesher_matrices": {
+            "MaterialeProva": [
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        false,
+                        false
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ],
+                [
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ],
+                    [
+                        true,
+                        true
+                    ]
+                ]
+            ]
+        }
+    },
+    "solverInput": {
+        "ports": [
+            {
+                "name": "Port1",
+                "category": "port",
+                "type": 1,
+                "inputElement": {
+                    "type": "CIRCLE",
+                    "keyComponent": 0,
+                    "geometryAttributes": {
+                        "radius": 0.24,
+                        "segments": 20
+                    },
+                    "name": "inputPort1",
+                    "orbitEnabled": false,
+                    "transformationParams": {
+                        "position": [
+                            0,
+                            2,
+                            1
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "previousTransformationParams": {
+                        "position": [
+                            -2.5,
+                            2.5,
+                            0.0
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "opacity": 1,
+                    "transparency": false
+                },
+                "outputElement": {
+                    "type": "CIRCLE",
+                    "keyComponent": 0,
+                    "geometryAttributes": {
+                        "radius": 0.24,
+                        "segments": 20
+                    },
+                    "name": "outputPort1",
+                    "orbitEnabled": false,
+                    "transformationParams": {
+                        "position": [
+                            0,
+                            10,
+                            1
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "previousTransformationParams": {
+                        "position": [
+                            2.5,
+                            2.5,
+                            0.0
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "opacity": 1,
+                    "transparency": false
+                },
+                "isSelected": true,
+                "rlcParams": {
+                    "resistance": 50
+                }
+            }
+        ],
+        "lumped_elements": [
+            {
+                "name": "Lumped2",
+                "category": "lumped",
+                "type": 1,
+                "inputElement": {
+                    "type": "CIRCLE",
+                    "keyComponent": 0,
+                    "geometryAttributes": {
+                        "radius": 0.24,
+                        "segments": 20
+                    },
+                    "name": "inputPort2",
+                    "orbitEnabled": false,
+                    "transformationParams": {
+                        "position": [
+                            0,
+                            2,
+                            1
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "previousTransformationParams": {
+                        "position": [
+                            -2.5,
+                            2.5,
+                            0.0
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "opacity": 1,
+                    "transparency": false
+                },
+                "outputElement": {
+                    "type": "CIRCLE",
+                    "keyComponent": 0,
+                    "geometryAttributes": {
+                        "radius": 0.24,
+                        "segments": 20
+                    },
+                    "name": "outputPort2",
+                    "orbitEnabled": false,
+                    "transformationParams": {
+                        "position": [
+                            0,
+                            10,
+                            1
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "previousTransformationParams": {
+                        "position": [
+                            2.5,
+                            2.5,
+                            0.0
+                        ],
+                        "rotation": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            1,
+                            1,
+                            1
+                        ]
+                    },
+                    "opacity": 1,
+                    "transparency": false
+                },
+                "isSelected": false,
+                "rlcParams": {
+                    "resistance": 50
+                },
+                "value": 50
+            }
+        ],
+        "materials": [
+            {
+                "name": "MaterialeProva",
+                "color": "#FFFF00",
+                "permeability": 1,
+                "tangent_delta_permeability": 1.2,
+                "custom_permeability": [
+                    1.2,
+                    10.0
+                ],
+                "permittivity": 1,
+                "tangent_delta_permittivity": 0,
+                "custom_permittivity": [
+                    2.4,
+                    11.0
+                ],
+                "conductivity": 58000000,
+                "tangent_delta_conductivity": 2.7,
+                "custom_conductivity": [
+                    2.7,
+                    12.0
+                ]
+            }
+        ],
+        "frequencies": [
+            100,
+            464.15888336127773
+        ],
+        "unit": "mm",
+        "ports_scattering_value": 50
+    }
+}
