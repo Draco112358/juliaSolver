@@ -239,7 +239,7 @@ function create_volumes_mapping_v2(grids)
     return mapping, num_ele
 end
 
-function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=nothing)
+function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=nothing, commentsEnabled=true)
     #println(Base.Threads.nthreads())
     mesherDict = mesherOutput
     inputDict = solverInput
@@ -280,19 +280,27 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
     mapping_vols, num_centri = create_volumes_mapping_v2(grids)
     centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
     externals_grids = create_Grids_externals(grids)
-    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin)
+    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled)
     if length(stopComputation) > 0
         pop!(stopComputation)
         return false
     end
-    FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, webSocketClient)
-    println("time for solver")
+    if commentsEnabled
+        FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, webSocketClient)
+        println("time for solver")
+    else
+        FFTCP, FFTCLp = compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, webSocketClient)
+    end
     #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
     if length(stopComputation) > 0
         pop!(stopComputation)
         return false
     end
-    out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, webSocketClient)
+    if commentsEnabled
+        out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, webSocketClient, commentsEnabled)
+    else
+        out = FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, webSocketClient, commentsEnabled)
+    end
     if out == false
         return false
     end
@@ -316,7 +324,6 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
     # xlabel("Frequency [Hz]", fontsize=14)
     # ylabel("L [nH]", fontsize=14)
     # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
-
     return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
     #return ""
 end

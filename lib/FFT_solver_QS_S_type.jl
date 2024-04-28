@@ -4,7 +4,7 @@ include("build_Yle_S.jl")
 include("compute_Z_self.jl")
 include("gmres_custom.jl")
 
-function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, client)
+function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, client, commentsEnabled::Bool)
     freq = freq .* escalings["freq"]
     # GMRES settings ----------------------------
 
@@ -104,12 +104,14 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
 
                 V::Vector{ComplexF64}, flag, relres, iter, resvec = gmres_custom(tn, false, GMRES_settings["tol"][k], Inner_Iter, Vrest[:, c1], w[k], incidence_selection, FFTCP, FFTCLp, DZ, Yle, expansions, invZ, invP, F, PLIVector, PVector, PLI2Vector, P2Vector, Chi2Vector)
                 tot_iter_number = (iter[1] - 1) * Inner_Iter + iter[2] + 1
-                if (flag == 0)
-                    println("Flag $flag - Iteration = $k - Convergence reached, number of iterations:$tot_iter_number")
-                end
+                if commentsEnabled
+                    if (flag == 0)
+                        println("Flag $flag - Iteration = $k - Convergence reached, number of iterations:$tot_iter_number")
+                    end
 
-                if (flag == 1)
-                    println("Flag $flag - Iteration = $k - Convergence not reached, number of iterations:$Inner_Iter")
+                    if (flag == 1)
+                        println("Flag $flag - Iteration = $k - Convergence not reached, number of iterations:$Inner_Iter")
+                    end
                 end
                 #V, info = IterativeSolvers.gmres!(x0, prodts, tn; reltol=GMRES_settings.tol[k], restart=Inner_Iter, maxiter=Inner_Iter, initially_zero=false, log=true, verbose=false)
                 # V, info = IterativeSolvers.gmres(prodts, tn; reltol=GMRES_settings.tol[k], restart=Inner_Iter, maxiter=Inner_Iter, initially_zero=false, log=true, verbose=false)
