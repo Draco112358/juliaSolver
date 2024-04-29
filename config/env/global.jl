@@ -1,5 +1,5 @@
 # Place here configuration options that will be set for all environments
-# ENV["GENIE_ENV"] = "prod"
+ENV["GENIE_ENV"] = "prod"
 using DotEnv
 cfg = DotEnv.config()
 ENV["AWS_ACCESS_KEY_ID"]=cfg["AWS_ACCESS_KEY_ID"]

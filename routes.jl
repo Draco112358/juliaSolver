@@ -16,7 +16,7 @@ AWS = global_aws_config(; region=aws_region, creds=creds)
 
 server = WebsocketServer()
 
-@async serve(server; verbose=false)
+Threads.@spawn serve(server; verbose=false)
 
 const stopComputation = []
 
@@ -79,4 +79,4 @@ end
 #   println("------------- SOLVER READY ---------------")
 # end
 
-@async force_compile()
+Threads.@spawn force_compile()
