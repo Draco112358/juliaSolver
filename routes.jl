@@ -19,6 +19,7 @@ server = WebsocketServer()
 Threads.@spawn serve(server; verbose=false)
 
 const stopComputation = []
+const commentsEnabled = []
 
 # route("/") do
 #   serve_static_file("welcome.html")
@@ -45,7 +46,9 @@ end
 
 
 route("/test_solving", method="POST") do
-  return JSON.json(doSolving(jsonpayload()["mesherOutput"], jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]))
+  comments = length(commentsEnabled) > 0
+  if (!comments) push!(commentsEnabled, 1) end
+  return JSON.json(doSolving(jsonpayload()["mesherOutput"], jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; commentsEnabled=comments))
 end
 
 
