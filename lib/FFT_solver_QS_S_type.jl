@@ -58,8 +58,8 @@ function FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCL
 
     resProd = Array{ComplexF64}(undef, 2 * m)
     # resProd = zeros(ComplexF64, 2*m,1)
-    tn = Array{ComplexF64}(undef, m + ns + n)
-    # tn = zeros(ComplexF64, m + ns + n, 1)
+    # tn = Array{ComplexF64}(undef, m + ns + n)
+    tn = zeros(ComplexF64, m + ns + n, 1)
 
     for k = 1:nfreq
         if length(stopComputation) > 0
