@@ -7,7 +7,7 @@ function build_Yle_S(lumped_elements, grounding_nodes, ports, escalings, n, w, v
     NNz_max = N_ele^2
     ind_r = zeros(NNz_max)
     ind_c = zeros(NNz_max)
-    vals = zeros(NNz_max)
+    vals = zeros(ComplexF64, NNz_max)
     nlum = size(lumped_elements["le_nodes"], 1)
     cont = 0
     for c1 in range(1, nlum)
