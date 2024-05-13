@@ -304,9 +304,6 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
     if out == false
         return false
     end
-    if !isnothing(webSocketClient)
-        close(webSocketClient)
-    end
     #PProf.pprof()
 
 
@@ -324,6 +321,10 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
     # xlabel("Frequency [Hz]", fontsize=14)
     # ylabel("L [nH]", fontsize=14)
     # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
+    if !isnothing(webSocketClient)
+        send(client, "Computation Completed")
+        close(webSocketClient)
+    end
     return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
     #return ""
 end

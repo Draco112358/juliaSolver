@@ -41,7 +41,6 @@ listen(server, :client) do client
     mesherOutput = JSON.parse(read(p, String))
     # end
     results = doSolving(mesherOutput, jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; webSocketClient=client)
-    send(client, "Computation Completed")
     return JSON.json(results)
   end
 end
