@@ -40,7 +40,9 @@ listen(server, :client) do client
     p = S3Path("s3://models-bucket-49718971291/" * jsonpayload()["mesherFileId"])
     mesherOutput = JSON.parse(read(p, String))
     # end
-    return JSON.json(doSolving(mesherOutput, jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; webSocketClient=client))
+    results = doSolving(mesherOutput, jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; webSocketClient=client)
+    send(client, "Computation Completed")
+    return JSON.json(results)
   end
 end
 
