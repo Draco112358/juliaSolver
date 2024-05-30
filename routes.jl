@@ -37,11 +37,17 @@ listen(server, :client) do client
     # if (haskey(jsonpayload(), "mesherOutput"))
     #   mesherOutput = jsonpayload()["mesherOutput"]
     # else
-    p = S3Path("s3://models-bucket-49718971291/" * jsonpayload()["mesherFileId"])
-    mesherOutput = JSON.parse(read(p, String))
+    if jsonpayload()["storage"] == "online"
+      p = S3Path("s3://models-bucket-49718971291/" * jsonpayload()["mesherFileId"])
+      mesherOutput = JSON.parse(read(p, String))
+    else
+      mesherOutput = JSON.parsefile(jsonpayload()["mesherFileId"])
+    end
+    
+    
     # end
-    results = doSolving(mesherOutput, jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; webSocketClient=client)
-    return JSON.json(results)
+    solverOutput = JSON.json(doSolving(mesherOutput, jsonpayload()["solverInput"], jsonpayload()["solverAlgoParams"]; webSocketClient=client))
+    return solverOutput
   end
 end
 
@@ -60,7 +66,7 @@ function force_compile()
     data = open(JSON.parse, "first_run_data.json")
     Genie.Requests.HTTP.request(r.method, "http://localhost:8000" * tolink(name), [("Content-Type", "application/json")], JSON.json(data))
   end
-  println("------------- SOLVER READY ---------------")
+  println("SOLVER READY")
 end
 
 # function force_compile()
