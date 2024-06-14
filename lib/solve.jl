@@ -239,6 +239,11 @@ function create_volumes_mapping_v2(grids)
     return mapping, num_ele
 end
 
+function isMaterialConductor(materialName::String, materials)::Bool
+    material = materials[findfirst(m -> m["name"] == materialName, materials)]
+    return material["conductivity"] > 0.0
+end
+
 function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=nothing, commentsEnabled=true)
     #println(Base.Threads.nthreads())
     mesherDict = mesherOutput
@@ -251,9 +256,21 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
 
     origin = (mesherDict["origin"]["origin_x"], mesherDict["origin"]["origin_y"], mesherDict["origin"]["origin_z"])
 
-    testarray = [copy(value) for (index, value) in mesherDict["mesher_matrices"]]
+    MATERIALS = [material(el) for el in inputDict["materials"]]
 
-    grids = [unsqueeze(values, dims=2) for values in testarray]
+    dominant_list = []
+    grids = []
+    conductors_index = 1
+    for (mat, value) in mesherDict["mesher_matrices"]
+        push!(grids, unsqueeze(copy(value), dims=2))
+        if (isMaterialConductor(mat, MATERIALS))
+            push!(dominant_list, conductors_index)
+        end
+        conductors_index += 1
+    end
+    # testarray = [copy(value) for (index, value) in mesherDict["mesher_matrices"]]
+
+    # grids = [unsqueeze(values, dims=2) for values in testarray]
 
     frequencies = inputDict["frequencies"]
     freq = Array{Float64}(undef, 1, length(frequencies))
@@ -268,7 +285,6 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
 
     L_ELEMENTS = read_lumped_elements(inputDict["lumped_elements"], escal)
 
-    MATERIALS = [material(el) for el in inputDict["materials"]]
     #SIGNALS = [el for el in inputDict["signals"]]
 
     # # START SETTINGS--------------------------------------------
@@ -280,7 +296,7 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
     mapping_vols, num_centri = create_volumes_mapping_v2(grids)
     centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
     externals_grids = create_Grids_externals(grids)
-    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled)
+    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled, dominant_list)
     if length(stopComputation) > 0
         pop!(stopComputation)
         return false

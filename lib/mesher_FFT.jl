@@ -18,10 +18,9 @@ include("create_A_mats_and_find_borders_with_map_Zs.jl")
 
 using SparseArrays
 
-function mesher_FFT(use_escalings, materials, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, ports, lumped_elements, origin, commentsEnabled)
+function mesher_FFT(use_escalings, materials, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, ports, lumped_elements, origin, commentsEnabled, dominant_list)
 
-
-    dominant_list = 1
+    # dominant_list = 1
 
     escalings = Dict("Lp" => 1.0, "P" => 1.0, "R" => 1.0, "Cd" => 1.0, "Is" => 1.0, "Yle" => 1.0, "freq" => 1.0, "time" => 1.0)
     if use_escalings == 1
