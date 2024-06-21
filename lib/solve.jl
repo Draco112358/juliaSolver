@@ -8,7 +8,7 @@ include("From_3D_to_1D.jl")
 using MKL
 using JSON, SimpleWebsockets
 using MLUtils: unsqueeze
-function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports)
+function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports, id)
     z = [[[[0.1, 0.0]]]]
     pop!(z)
     s = similar(z)
@@ -27,9 +27,13 @@ function dump_json_data(matrix_Z, matrix_S, matrix_Y, num_ports)
         end
     end
     solver_matrices_dict = Dict(
-        "matrix_Z" => JSON.json(z),
-        "matrix_S" => JSON.json(s),
-        "matrix_Y" => JSON.json(y)
+        "matrices" => Dict(
+            "matrix_Z" => JSON.json(z),
+            "matrix_S" => JSON.json(s),
+            "matrix_Y" => JSON.json(y),
+        ),
+        "isStopped" => false,
+        "id" => id
     )
     return solver_matrices_dict
 end
@@ -98,17 +102,17 @@ function read_ports(port_objects, escal)
     N_PORTS = length(port_objects)
 
     for port_object in port_objects
-        @assert length(port_object.inputElement.transformationParams.position) == 3
+        @assert length(port_object["inputElement"]["transformationParams"]["position"]) == 3
         ipos = zeros((1, 3))
-        ipos[1, 1] = port_object.inputElement.transformationParams.position[1] * escal
-        ipos[1, 2] = port_object.inputElement.transformationParams.position[2] * escal
-        ipos[1, 3] = port_object.inputElement.transformationParams.position[3] * escal
+        ipos[1, 1] = port_object["inputElement"]["transformationParams"]["position"][1] * escal
+        ipos[1, 2] = port_object["inputElement"]["transformationParams"]["position"][2] * escal
+        ipos[1, 3] = port_object["inputElement"]["transformationParams"]["position"][3] * escal
         push!(input_positions, ipos)
-        @assert length(port_object.outputElement.transformationParams.position) == 3
+        @assert length(port_object["outputElement"]["transformationParams"]["position"]) == 3
         opos = zeros((1, 3))
-        opos[1, 1] = port_object.outputElement.transformationParams.position[1] * escal
-        opos[1, 2] = port_object.outputElement.transformationParams.position[2] * escal
-        opos[1, 3] = port_object.outputElement.transformationParams.position[3] * escal
+        opos[1, 1] = port_object["outputElement"]["transformationParams"]["position"][1] * escal
+        opos[1, 2] = port_object["outputElement"]["transformationParams"]["position"][2] * escal
+        opos[1, 3] = port_object["outputElement"]["transformationParams"]["position"][3] * escal
         push!(output_positions, opos)
     end
     @assert length(input_positions) == N_PORTS && length(output_positions) == N_PORTS
@@ -142,36 +146,36 @@ function read_lumped_elements(lumped_elements_objects, escal)
         @assert length(input_positions) == N_LUMPED_ELEMENTS && length(output_positions) == N_LUMPED_ELEMENTS && length(values) == N_LUMPED_ELEMENTS && length(types) == N_LUMPED_ELEMENTS
     else
         for lumped_element_object in lumped_elements_objects
-            @assert length(lumped_element_object.inputElement.transformationParams.position) == 3
+            @assert length(lumped_element_object["inputElement"]["transformationParams"]["position"]) == 3
             ipos = zeros((1, 3))
-            ipos[1, 1] = lumped_element_object.inputElement.transformationParams.position[1] * escal
-            ipos[1, 2] = lumped_element_object.inputElement.transformationParams.position[2] * escal
-            ipos[1, 3] = lumped_element_object.inputElement.transformationParams.position[3] * escal
+            ipos[1, 1] = lumped_element_object["inputElement"]["transformationParams"]["position"][1] * escal
+            ipos[1, 2] = lumped_element_object["inputElement"]["transformationParams"]["position"][2] * escal
+            ipos[1, 3] = lumped_element_object["inputElement"]["transformationParams"]["position"][3] * escal
             push!(input_positions, ipos)
-            @assert length(lumped_element_object.outputElement.transformationParams.position) == 3
+            @assert length(lumped_element_object["outputElement"]["transformationParams"]["position"]) == 3
             opos = zeros((1, 3))
-            opos[1, 1] = lumped_element_object.outputElement.transformationParams.position[1] * escal
-            opos[1, 2] = lumped_element_object.outputElement.transformationParams.position[2] * escal
-            opos[1, 3] = lumped_element_object.outputElement.transformationParams.position[3] * escal
+            opos[1, 1] = lumped_element_object["outputElement"]["transformationParams"]["position"][1] * escal
+            opos[1, 2] = lumped_element_object["outputElement"]["transformationParams"]["position"][2] * escal
+            opos[1, 3] = lumped_element_object["outputElement"]["transformationParams"]["position"][3] * escal
             push!(output_positions, opos)
             lvalue = zeros(1)
-            lvalue[1] = lumped_element_object.value
+            lvalue[1] = lumped_element_object["value"]
             append!(values, lvalue)
 
             ltype = zeros(Int64, 1)
-            ltype[1] = lumped_element_object.type
+            ltype[1] = lumped_element_object["type"]
             push!(types, ltype)
 
             r_value = zeros(Float64, 1)
-            r_value[1] = hasproperty(lumped_element_object.rlcParams, :resistance) ? lumped_element_object.rlcParams.resistance : 0.0
+            r_value[1] = hasproperty(lumped_element_object["rlcParams"], :resistance) ? lumped_element_object["rlcParams"]["resistance"] : 0.0
             push!(R_values, r_value)
 
             l_value = zeros(Float64, 1)
-            l_value[1] = hasproperty(lumped_element_object.rlcParams, :inductance) ? lumped_element_object.rlcParams.inductance : 0.0
+            l_value[1] = hasproperty(lumped_element_object["rlcParams"], :inductance) ? lumped_element_object["rlcParams"]["inductance"] : 0.0
             push!(L_values, l_value)
 
             c_value = zeros(Float64, 1)
-            c_value[1] = hasproperty(lumped_element_object.rlcParams, :capacitance) ? lumped_element_object.rlcParams.capacitance : 0.0
+            c_value[1] = hasproperty(lumped_element_object["rlcParams"], :capacitance) ? lumped_element_object["rlcParams"]["capacitance"] : 0.0
             push!(C_values, c_value)
         end
 
@@ -244,7 +248,7 @@ function isMaterialConductor(materialName::String, materials)::Bool
     return material["conductivity"] > 0.0
 end
 
-function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=nothing, commentsEnabled=true)
+function doSolving(mesherOutput, solverInput, solverAlgoParams, id; chan=nothing, commentsEnabled=true)
     #println(Base.Threads.nthreads())
     mesherDict = mesherOutput
     inputDict = solverInput
@@ -272,76 +276,56 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams; webSocketClient=
 
     # grids = [unsqueeze(values, dims=2) for values in testarray]
 
-    frequencies = inputDict["frequencies"]
-    freq = Array{Float64}(undef, 1, length(frequencies))
-    for i in range(1, length(frequencies))
-        freq[1, i] = frequencies[i]
-    end
-    #freq = convert(Array{Float64}, freq)
-
-    n_freq = length(freq)
-
-    PORTS = read_ports(inputDict["ports"], escal)
-
-    L_ELEMENTS = read_lumped_elements(inputDict["lumped_elements"], escal)
-
-    #SIGNALS = [el for el in inputDict["signals"]]
-
-    # # START SETTINGS--------------------------------------------
-    # ind_low_freq= filter(i -> !iszero(freq[i]), findall(f -> f<1e5, frequencies))
-    # tol[ind_low_freq] .= 1e-7
-    GMRES_settings = Dict("Inner_Iter" => solverAlgoParams["innerIteration"], "Outer_Iter" => solverAlgoParams["outerIteration"], "tol" => solverAlgoParams["convergenceThreshold"] * ones((n_freq)))
-    QS_Rcc_FW = 1 # 1 QS, 2 Rcc, 3 Taylor
-    use_escalings = 1
-    mapping_vols, num_centri = create_volumes_mapping_v2(grids)
-    centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
-    externals_grids = create_Grids_externals(grids)
-    escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled, dominant_list)
-    if length(stopComputation) > 0
-        pop!(stopComputation)
-        return false
-    end
-    if commentsEnabled
-        FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, webSocketClient)
-        println("time for solver")
-    else
-        FFTCP, FFTCLp = compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, webSocketClient)
-    end
-    #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
-    if length(stopComputation) > 0
-        pop!(stopComputation)
-        return false
-    end
-    if commentsEnabled
-        out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, webSocketClient, commentsEnabled)
-    else
-        out = FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, webSocketClient, commentsEnabled)
-    end
-    if out == false
-        close(webSocketClient)
-        return false
-    end
-    #PProf.pprof()
-
-
-    # PyPlot.figure()
-    # semilogx(freq, real(reshape(out["Z"][1, 1, :], (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
-    # xlim([freq[1], 1e9])
-    # xlabel("Frequency [Hz]", fontsize=14)
-    # ylabel("R [Ω]", fontsize=14)
-    # # PyPlot.legend(["JULIA"], loc="upper left", fancybox="true")
-    # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
-
-    # PyPlot.figure()
-    # semilogx(freq, imag(reshape(out["Z"][1, 1, :] ./ (2 * pi * freq') * 1e9, (1, length(out["Z"][1, 1, :])))), "b*", linewidth=2)
-    # xlim([freq[1], 1e9])
-    # xlabel("Frequency [Hz]", fontsize=14)
-    # ylabel("L [nH]", fontsize=14)
-    # gca().xticks = (["10^{1}", "10^{2}", "10^{3}", "10^{4}", "10^{5}", "10^{6}", "10^{7}", "10^{8}", "10^{9}"], [10, 10^2, 10^3, 10^4, 10^5, 10^6, 10^7, 10^8, 10^9])
-    if !isnothing(webSocketClient)
-        send(webSocketClient, "Computation Completed")
-        close(webSocketClient)
-    end
-    return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]))
+        frequencies = inputDict["frequencies"]
+        freq = Array{Float64}(undef, 1, length(frequencies))
+        for i in range(1, length(frequencies))
+            freq[1, i] = frequencies[i]
+        end
+        #freq = convert(Array{Float64}, freq)
+    
+        n_freq = length(freq)
+    
+        PORTS = read_ports(inputDict["ports"], escal)
+    
+        L_ELEMENTS = read_lumped_elements(inputDict["lumped_elements"], escal)
+    
+        MATERIALS = [material(el) for el in inputDict["materials"]]
+        #SIGNALS = [el for el in inputDict["signals"]]
+    
+        # # START SETTINGS--------------------------------------------
+        # ind_low_freq= filter(i -> !iszero(freq[i]), findall(f -> f<1e5, frequencies))
+        # tol[ind_low_freq] .= 1e-7
+        GMRES_settings = Dict("Inner_Iter" => solverAlgoParams["innerIteration"], "Outer_Iter" => solverAlgoParams["outerIteration"], "tol" => solverAlgoParams["convergenceThreshold"] * ones((n_freq)))
+        QS_Rcc_FW = 1 # 1 QS, 2 Rcc, 3 Taylor
+        use_escalings = 1
+        mapping_vols, num_centri = create_volumes_mapping_v2(grids)
+        centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
+        externals_grids = create_Grids_externals(grids)
+        escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled)
+        if length(stopComputation) > 0
+            pop!(stopComputation)
+            return Dict("id" => id, "isStopped" => true)
+        end
+        if commentsEnabled
+            FFTCP, FFTCLp = @time compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, id, chan)
+            println("time for solver")
+        else
+            FFTCP, FFTCLp = compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Int64(mesherDict["n_cells"]["n_cells_x"]), Int64(mesherDict["n_cells"]["n_cells_y"]), Int64(mesherDict["n_cells"]["n_cells_z"]), QS_Rcc_FW, id, chan)
+        end
+        #@profile FFT_solver_QS_S_type(freq,escalings,incidence_selection,FFTCP,FFTCLp,diagonals,ports,lumped_elements,expansions,GMRES_settings,Zs_info,QS_Rcc_FW);
+        if length(stopComputation) > 0
+            pop!(stopComputation)
+            return Dict("id" => id, "isStopped" => true)
+        end
+        if commentsEnabled
+            out = @time FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, id, chan, commentsEnabled)
+        else
+            out = FFT_solver_QS_S_type(freq, escalings, incidence_selection, FFTCP, FFTCLp, diagonals, ports, ports_scatter_value, lumped_elements, expansions, GMRES_settings, Zs_info, QS_Rcc_FW, id, chan, commentsEnabled)
+        end
+    
+        if !isnothing(chan)
+             publish_data(Dict("computation_completed" => true, "id" => id), "solver_feedback", chan)
+        end
+        return dump_json_data(out["Z"], out["S"], out["Y"], length(inputDict["ports"]), id)
     #return ""
 end

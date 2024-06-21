@@ -2,17 +2,17 @@ include("compute_Lp_Voxels.jl")
 include("compute_row_P_sup.jl")
 import SimpleWebsockets
 
-function compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Nx, Ny, Nz, QS_Rcc_FW, client)
+function compute_FFT_mutual_coupling_mats(circulant_centers, escalings, Nx, Ny, Nz, QS_Rcc_FW, id, chan)
     # FFTCP, FFTCLp = Array{Array{ComplexF64}}(undef, 3, 3), nothing
     # if QS_Rcc_FW == 1
     FFTW.set_num_threads(12)
     FFTCP = compute_Circulant_P_sup(circulant_centers, escalings, Nx, Ny, Nz)
-    if !isnothing(client)
-        send(client, "P Computing Completed")
+    if !isnothing(chan)
+        publish_data(Dict("computingP" => true, "id" => id), "solver_feedback", chan)
     end
     FFTCLp = compute_Circulant_Lp(circulant_centers, escalings, Nx, Ny, Nz)
-    if !isnothing(client)
-        send(client, "Lp Computing Completed")
+    if !isnothing(chan)
+        publish_data(Dict("computingLp" => true, "id" => id), "solver_feedback", chan)
     end
     # elseif QS_Rcc_FW == 2
     #     distance_method = "RCC" # RCC AVG MIN
