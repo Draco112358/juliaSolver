@@ -301,7 +301,7 @@ function doSolving(mesherOutput, solverInput, solverAlgoParams, id; chan=nothing
         mapping_vols, num_centri = create_volumes_mapping_v2(grids)
         centri_vox, id_mat = create_volume_centers(grids, mapping_vols, num_centri, sx, sy, sz, origin)
         externals_grids = create_Grids_externals(grids)
-        escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled)
+        escalings, incidence_selection, circulant_centers, diagonals, expansions, ports, lumped_elements, li_mats, Zs_info = mesher_FFT(use_escalings, MATERIALS, sx, sy, sz, grids, centri_vox, externals_grids, mapping_vols, PORTS, L_ELEMENTS, origin, commentsEnabled, dominant_list)
         if length(stopComputation) > 0
             pop!(stopComputation)
             return Dict("id" => id, "isStopped" => true)
