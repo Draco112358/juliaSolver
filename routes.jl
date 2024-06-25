@@ -108,13 +108,13 @@ export publish_data
 
 const VIRTUALHOST = "/"
 const HOST = "127.0.0.1"
+const stop_condition = Ref{Float64}(0.0)
 
 function receive()
   # 1. Create a connection to the localhost or 127.0.0.1 of virtualhost '/'
   connection(; virtualhost=VIRTUALHOST, host=HOST) do conn
       # 2. Create a channel to send messages
       AMQPClient.channel(conn, AMQPClient.UNUSED_CHANNEL, true) do chan
-          
           force_compile2()
           # EXCG_DIRECT = "MyDirectExcg"
           # @assert exchange_declare(chan1, EXCG_DIRECT, EXCHANGE_TYPE_DIRECT)
@@ -125,6 +125,7 @@ function receive()
 
           # 4. Setup function to receive message
           on_receive_management = (msg) -> begin
+              basic_ack(chan, msg.delivery_tag)
               data = JSON.parse(String(msg.data))
               #data = String(msg.data)
               println(data["message"])
@@ -133,11 +134,12 @@ function receive()
                 for (key, value) in data["body"]
                   println(key)
                 end
-                mesherOutput = open(JSON.parse, data["body"]["mesherFileId"])
-                solverOutput = doSolving(mesherOutput, data["body"]["solverInput"], data["body"]["solverAlgoParams"], data["body"]["id"]; chan)
-                publish_data(solverOutput, "solver_results", chan)
+                mesherOutput = JSON.parsefile(data["body"]["mesherFileId"])
+                Threads.@spawn doSolving(mesherOutput, data["body"]["solverInput"], data["body"]["solverAlgoParams"], data["body"]["id"]; chan)
               end
-              basic_ack(chan, msg.delivery_tag)
+              if data["message"] == "stop"
+                stop_condition[] = 1.0
+              end
           end
 
           # 5. Configure Quality of Service
@@ -146,7 +148,7 @@ function receive()
 
           @assert success_management == true
 
-          while true
+          while stop_condition[] != 1.0
               sleep(1)
           end
           # 5. Close the connection
