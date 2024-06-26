@@ -249,10 +249,6 @@ function isMaterialConductor(materialName::String, materials)::Bool
 end
 
 function doSolving(mesherOutput, solverInput, solverAlgoParams, id; chan=nothing, commentsEnabled=true)
-    #println(Base.Threads.nthreads())
-    open("/Users/edgardovittoria/Desktop/solverInput.json", "w") do f
-        write(f, JSON.json(solverInput))
-    end
     mesherDict = mesherOutput
     inputDict = solverInput
     unit = solverInput["unit"]

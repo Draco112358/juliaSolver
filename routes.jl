@@ -1,4 +1,4 @@
-using Genie, Genie.Renderer, Genie.Renderer.Html, Genie.Renderer.Json, Genie.Requests, AWS, AWSS3, SimpleWebsockets, Base.Threads, AMQPClient
+using Genie, Genie.Renderer, Genie.Renderer.Html, Genie.Renderer.Json, Genie.Requests, AWS, AWSS3, SimpleWebsockets, Base.Threads, AMQPClient, JSON
 include("./lib/solve.jl")
 
 Genie.config.run_as_server = true
@@ -130,10 +130,6 @@ function receive()
               #data = String(msg.data)
               println(data["message"])
               if (data["message"] == "solving")
-                println("qui")
-                for (key, value) in data["body"]
-                  println(key)
-                end
                 mesherOutput = JSON.parsefile(data["body"]["mesherFileId"])
                 Threads.@spawn doSolving(mesherOutput, data["body"]["solverInput"], data["body"]["solverAlgoParams"], data["body"]["id"]; chan)
               end
